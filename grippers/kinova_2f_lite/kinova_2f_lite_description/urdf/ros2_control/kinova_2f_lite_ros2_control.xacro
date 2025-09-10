@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="kinova_2f_lite_ros2_control" params="prefix sim_gazebo" >
+
+    <ros2_control name="GripperHardwareInterface" type="system">
+        <xacro:if value="${sim_gazebo}">
+            <hardware>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </hardware>
+        </xacro:if>
+
+        <joint name="${prefix}right_finger_bottom_joint">
+            <command_interface name="position" />
+            <state_interface name="position">
+            <state_interface name="effort" />
+                <param name="initial_value">${right_finger_bottom_joint_initial}</param>
+            </state_interface>
+            <state_interface name="velocity"/>
+        </joint>
+        
+        <joint name="${prefix}right_finger_tip_joint">
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+            <state_interface name="effort" />
+            <param name="mimic">${prefix}right_finger_bottom_joint</param>
+            <param name="multiplier">-1</param>
+        </joint>
+        
+        <joint name="${prefix}left_finger_bottom_joint">
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+            <state_interface name="effort" />
+            <param name="mimic">${prefix}right_finger_bottom_joint</param>
+            <param name="multiplier">-1</param>
+        </joint>
+        
+        <joint name="${prefix}left_finger_tip_joint">
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+            <state_interface name="effort" />
+            <param name="mimic">${prefix}right_finger_bottom_joint</param>
+            <param name="multiplier">-1</param>
+        </joint>
+    </ros2_control>
+
+  </xacro:macro>
+</robot>

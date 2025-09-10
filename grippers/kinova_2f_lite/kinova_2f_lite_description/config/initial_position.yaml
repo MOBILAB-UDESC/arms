@@ -1,0 +1,5 @@
+initial_positions:
+  right_finger_bottom_joint: 0.0
+  right_finger_tip_joint: 0.0
+  left_finger_bottom_joint: 0.0
+  left_finger_tip_joint: 0.0

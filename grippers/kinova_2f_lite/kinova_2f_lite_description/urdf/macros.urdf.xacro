@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:arg name="gripper_joint_limits" default="$(find kinova_2f_lite_description)/config/joint_limits.yaml" />
+    <xacro:arg name="gripper_initial_position" default="$(find kinova_2f_lite_description)/config/initial_position.yaml" />
+
+    <xacro:property name="gripper_joint_limits_config" value="${xacro.load_yaml('$(arg gripper_joint_limits)')}" />
+    <xacro:property name="gripper_positions_config" value="${xacro.load_yaml('$(arg gripper_initial_position)')}" />
+
+    <!-- Position limits -->
+    <xacro:property name="min_right_finger_bottom_joint_pos" value="${gripper_joint_limits_config['joint_limits']['right_finger_bottom_joint']['min_position']}" />
+    <xacro:property name="max_right_finger_bottom_joint_pos" value="${gripper_joint_limits_config['joint_limits']['right_finger_bottom_joint']['max_position']}" />
+    <xacro:property name="min_right_finger_tip_joint_pos" value="${gripper_joint_limits_config['joint_limits']['right_finger_tip_joint']['min_position']}" />
+    <xacro:property name="max_right_finger_tip_joint_pos" value="${gripper_joint_limits_config['joint_limits']['right_finger_tip_joint']['max_position']}" />
+    <xacro:property name="min_left_finger_bottom_joint_pos" value="${gripper_joint_limits_config['joint_limits']['left_finger_bottom_joint']['min_position']}" />
+    <xacro:property name="max_left_finger_bottom_joint_pos" value="${gripper_joint_limits_config['joint_limits']['left_finger_bottom_joint']['max_position']}" />
+    <xacro:property name="min_left_finger_tip_joint_pos" value="${gripper_joint_limits_config['joint_limits']['left_finger_tip_joint']['min_position']}" />
+    <xacro:property name="max_left_finger_tip_joint_pos" value="${gripper_joint_limits_config['joint_limits']['left_finger_tip_joint']['max_position']}" />
+
+    <!-- Velocity limits -->
+    <xacro:property name="right_finger_bottom_joint_vel" value="${gripper_joint_limits_config['joint_limits']['right_finger_bottom_joint']['max_velocity']}" />
+    <xacro:property name="right_finger_tip_joint_vel" value="${gripper_joint_limits_config['joint_limits']['right_finger_tip_joint']['max_velocity']}" />
+    <xacro:property name="left_finger_bottom_joint_vel" value="${gripper_joint_limits_config['joint_limits']['left_finger_bottom_joint']['max_velocity']}" />
+    <xacro:property name="left_finger_tip_joint_vel" value="${gripper_joint_limits_config['joint_limits']['left_finger_tip_joint']['max_velocity']}" />
+
+    <!-- Effort limits -->
+    <xacro:property name="right_finger_bottom_joint_effort" value="${gripper_joint_limits_config['joint_limits']['right_finger_bottom_joint']['max_effort']}" />
+    <xacro:property name="right_finger_tip_joint_effort" value="${gripper_joint_limits_config['joint_limits']['right_finger_tip_joint']['max_effort']}" />
+    <xacro:property name="left_finger_bottom_joint_effort" value="${gripper_joint_limits_config['joint_limits']['left_finger_bottom_joint']['max_effort']}" />
+    <xacro:property name="left_finger_tip_joint_effort" value="${gripper_joint_limits_config['joint_limits']['left_finger_tip_joint']['max_effort']}" />
+
+    <!-- Damping and friction -->
+    <xacro:property name="right_finger_bottom_joint_damping" value="${gripper_joint_limits_config['joint_limits']['right_finger_bottom_joint']['damping']}" />
+    <xacro:property name="right_finger_tip_joint_damping" value="${gripper_joint_limits_config['joint_limits']['right_finger_tip_joint']['damping']}" />
+    <xacro:property name="left_finger_bottom_joint_damping" value="${gripper_joint_limits_config['joint_limits']['left_finger_bottom_joint']['damping']}" />
+    <xacro:property name="left_finger_tip_joint_damping" value="${gripper_joint_limits_config['joint_limits']['left_finger_tip_joint']['damping']}" />
+    <xacro:property name="right_finger_bottom_joint_friction" value="${gripper_joint_limits_config['joint_limits']['right_finger_bottom_joint']['friction']}" />
+    <xacro:property name="right_finger_tip_joint_friction" value="${gripper_joint_limits_config['joint_limits']['right_finger_tip_joint']['friction']}" />
+    <xacro:property name="left_finger_bottom_joint_friction" value="${gripper_joint_limits_config['joint_limits']['left_finger_bottom_joint']['friction']}" />
+    <xacro:property name="left_finger_tip_joint_friction" value="${gripper_joint_limits_config['joint_limits']['left_finger_tip_joint']['friction']}" />
+
+    <!-- Access initial positions -->
+    <xacro:property name="right_finger_bottom_joint_initial" value="${gripper_positions_config['initial_positions']['right_finger_bottom_joint']}" />
+    <xacro:property name="right_finger_tip_joint_initial" value="${gripper_positions_config['initial_positions']['right_finger_tip_joint']}" />
+    <xacro:property name="left_finger_bottom_joint_initial" value="${gripper_positions_config['initial_positions']['left_finger_bottom_joint']}" />
+    <xacro:property name="left_finger_tip_joint_initial" value="${gripper_positions_config['initial_positions']['left_finger_tip_joint']}" />
+
+</robot>

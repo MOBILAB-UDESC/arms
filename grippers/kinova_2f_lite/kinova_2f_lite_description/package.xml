@@ -1,18 +1,16 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>arms</name>
+  <name>kinova_2f_lite_description</name>
   <version>0.0.0</version>
-  <description>Robotic arm packages available in the MOBILAB laboratory</description>
+  <description>URDF/XACRO, meshes, and configuration files for the Kinova 2F Lite gripper.</description>
   <maintainer email="nilton.csv18@edu.udesc.br">nilton</maintainer>
   <license>BSD-3-Clause</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
-  <exec_depend>arms_bringup</exec_depend>
-  <exec_depend>arms_utils</exec_depend>
-  <exec_depend>kinova_2f_lite_description</exec_depend>
-  <exec_depend>gen3_lite_description</exec_depend>
+  <depend>urdf</depend>
+  <depend>xacro</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
