@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:property name="joint_limits_config" value="${xacro.load_yaml('$(arg joint_limits)')}" />
+    <xacro:property name="initial_positions_config" value="${xacro.load_yaml('$(arg initial_position)')}" />
+
+    <!-- Position limits -->
+    <xacro:property name="min_joint_1_pos" value="${joint_limits_config['joint_limits']['joint_1']['min_position']}" />
+    <xacro:property name="max_joint_1_pos" value="${joint_limits_config['joint_limits']['joint_1']['max_position']}" />
+    <xacro:property name="min_joint_2_pos" value="${joint_limits_config['joint_limits']['joint_2']['min_position']}" />
+    <xacro:property name="max_joint_2_pos" value="${joint_limits_config['joint_limits']['joint_2']['max_position']}" />
+    <xacro:property name="min_joint_3_pos" value="${joint_limits_config['joint_limits']['joint_3']['min_position']}" />
+    <xacro:property name="max_joint_3_pos" value="${joint_limits_config['joint_limits']['joint_3']['max_position']}" />
+    <xacro:property name="min_joint_4_pos" value="${joint_limits_config['joint_limits']['joint_4']['min_position']}" />
+    <xacro:property name="max_joint_4_pos" value="${joint_limits_config['joint_limits']['joint_4']['max_position']}" />
+    <xacro:property name="min_joint_5_pos" value="${joint_limits_config['joint_limits']['joint_5']['min_position']}" />
+    <xacro:property name="max_joint_5_pos" value="${joint_limits_config['joint_limits']['joint_5']['max_position']}" />
+    <xacro:property name="min_joint_6_pos" value="${joint_limits_config['joint_limits']['joint_6']['min_position']}" />
+    <xacro:property name="max_joint_6_pos" value="${joint_limits_config['joint_limits']['joint_6']['max_position']}" />
+
+    <!-- Velocity limits -->
+    <xacro:property name="joint_1_vel" value="${joint_limits_config['joint_limits']['joint_1']['max_velocity']}" />
+    <xacro:property name="joint_2_vel" value="${joint_limits_config['joint_limits']['joint_2']['max_velocity']}" />
+    <xacro:property name="joint_3_vel" value="${joint_limits_config['joint_limits']['joint_3']['max_velocity']}" />
+    <xacro:property name="joint_4_vel" value="${joint_limits_config['joint_limits']['joint_4']['max_velocity']}" />
+    <xacro:property name="joint_5_vel" value="${joint_limits_config['joint_limits']['joint_5']['max_velocity']}" />
+    <xacro:property name="joint_6_vel" value="${joint_limits_config['joint_limits']['joint_6']['max_velocity']}" />
+
+    <!-- Effort limits -->
+    <xacro:property name="joint_1_effort" value="${joint_limits_config['joint_limits']['joint_1']['max_effort']}" />
+    <xacro:property name="joint_2_effort" value="${joint_limits_config['joint_limits']['joint_2']['max_effort']}" />
+    <xacro:property name="joint_3_effort" value="${joint_limits_config['joint_limits']['joint_3']['max_effort']}" />
+    <xacro:property name="joint_4_effort" value="${joint_limits_config['joint_limits']['joint_4']['max_effort']}" />
+    <xacro:property name="joint_5_effort" value="${joint_limits_config['joint_limits']['joint_5']['max_effort']}" />
+    <xacro:property name="joint_6_effort" value="${joint_limits_config['joint_limits']['joint_6']['max_effort']}" />
+
+    <!-- Access initial positions -->
+    <xacro:property name="joint_1_initial" value="${initial_positions_config['initial_positions']['joint_1']}" />
+    <xacro:property name="joint_2_initial" value="${initial_positions_config['initial_positions']['joint_2']}" />
+    <xacro:property name="joint_3_initial" value="${initial_positions_config['initial_positions']['joint_3']}" />
+    <xacro:property name="joint_4_initial" value="${initial_positions_config['initial_positions']['joint_4']}" />
+    <xacro:property name="joint_5_initial" value="${initial_positions_config['initial_positions']['joint_5']}" />
+    <xacro:property name="joint_6_initial" value="${initial_positions_config['initial_positions']['joint_6']}" />
+
+</robot>
