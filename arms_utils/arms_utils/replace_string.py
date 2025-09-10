@@ -3,12 +3,29 @@ import re
 
 
 def replace_string(file_path, old_strings, new_strings):
-    """Read a template file, perform replacements, and save it with the same extension."""
+    """
+    Read a template file, perform replacements, and save it with the same extension.
+
+    Args:
+        file_path (str): Path to the template file.
+        old_strings (list of str): List of strings to be replaced.
+        new_strings (list of str): List of strings to replace with.
+
+    Returns:
+        str: Path to the newly created file.
+    """
+    if len(old_strings) != len(new_strings):
+        raise ValueError("old_strings and new_strings must be of the same length.")
+
     with open(file_path, 'r') as srdf_file:
         srdf_content = srdf_file.read()
 
-    ext = re.sub(r'.*\.', '', os.path.basename(file_path))
-    base = re.sub(r'_template\.[^.]+$', '', os.path.basename(file_path))
+    file_name = os.path.basename(file_path)
+
+    # Get the file extension of file_name.
+    # If file_name contains '_template' before the extension, this part is removed.
+    ext = re.sub(r'.*\.', '', file_name)
+    base = re.sub(r'_template\.[^.]+$', '', file_name)
 
     for old_string, new_string in zip(old_strings, new_strings):
         srdf_content = srdf_content.replace(old_string, new_string)

@@ -15,7 +15,8 @@ def bridge_camera(context, *args, **kwargs):
         package='ros_gz_bridge',
         executable='parameter_bridge',
         output='screen',
-        name=f'{prefix}_camera_bridge',
+        name='camera_bridge',
+        namespace=args[0],
         arguments=[
             # ros2_topic@ros2_type[gz_type          gz->ros2
             f'{camera_topic}/image' + '@sensor_msgs/msg/Image' + '[gz.msgs.Image',
@@ -53,6 +54,7 @@ def generate_launch_description():
         gazebo_spawn_node,
         OpaqueFunction(
             function=bridge_camera,
+            args=[namespace],
             condition=IfCondition(LaunchConfiguration('use_camera', default=False))
         ),
     ])
