@@ -1,0 +1,84 @@
+/**/controller_manager:
+  ros__parameters:
+    update_rate: 100  # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+/**/gen3_lite_arm_controller:
+  ros__parameters:
+    type: joint_trajectory_controller/JointTrajectoryController
+    joints:
+      - <robot_prefix>joint_1
+      - <robot_prefix>joint_2
+      - <robot_prefix>joint_3
+      - <robot_prefix>joint_4
+      - <robot_prefix>joint_5
+      - <robot_prefix>joint_6
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+    allow_integration_in_goal_trajectories: true
+    allow_nonzero_velocity_at_trajectory_end: true
+    # state_publish_rate: 100.0
+    # action_monitor_rate: 20.0
+    # allow_partial_joints_goal: false
+    # interpolation_method: splines
+
+
+    # constraints:
+    #   stopped_velocity_tolerance: 0.2
+    #   goal_time: 0.0
+    #   <robot_prefix>joint_1: { trajectory: 0.2, goal: 0.1 }
+    #   <robot_prefix>joint_2: { trajectory: 0.2, goal: 0.1 }
+    #   <robot_prefix>joint_3: { trajectory: 0.2, goal: 0.1 }
+    #   <robot_prefix>joint_4: { trajectory: 0.2, goal: 0.1 }
+    #   <robot_prefix>joint_5: { trajectory: 0.2, goal: 0.1 }
+    #   <robot_prefix>joint_6: { trajectory: 0.2, goal: 0.1 }
+
+/**/kinova_2f_lite_gripper_controller:
+  ros__parameters:
+    # type: parallel_gripper_action_controller/GripperActionController
+    type: position_controllers/GripperActionController
+    joint: "<robot_prefix>right_finger_bottom_joint"
+    action_monitor_rate: 20.0
+    goal_tolerance: 0.01
+    max_effort: 100.0
+    allow_stalling: false
+    stall_velocity_threshold: 0.001
+    stall_timeout: 1.0
+    # type: joint_trajectory_controller/JointTrajectoryController
+    # joints:
+    #   - <robot_prefix>right_finger_bottom_joint
+    #   - <robot_prefix>left_finger_bottom_joint
+    #   - <robot_prefix>right_finger_tip_joint
+    #   - <robot_prefix>left_finger_tip_joint
+    # command_interfaces:
+    #   - position
+    # state_interfaces:
+    #   - position
+    #   - velocity
+
+    # # ADD THESE MISSING PARAMETERS:
+    # state_publish_rate: 50.0
+    # action_monitor_rate: 20.0
+    # allow_partial_joints_goal: false
+
+    # constraints:
+    #   stopped_velocity_tolerance: 0.01
+    #   goal_time: 0.6
+    #   <robot_prefix>right_finger_bottom_joint:
+    #     trajectory: 0.05
+    #     goal: 0.02
+    #   <robot_prefix>left_finger_bottom_joint:
+    #     trajectory: 0.05
+    #     goal: 0.02
+    #   <robot_prefix>right_finger_tip_joint:
+    #     trajectory: 0.05
+    #     goal: 0.02
+    #   <robot_prefix>left_finger_tip_joint:
+    #     trajectory: 0.05
+    #     goal: 0.02
