@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<robot name="gen3_lite" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="$(arg name)" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!-- Arguments -->
     <xacro:arg name="moveit_active" default="false" />

@@ -40,7 +40,6 @@ def launch_setup(context, *args, **kwargs):
 
     # Modify prefix to namespace/prefix if namespace is used
     if namespace.perform(context):
-        print("No namespace")
         prefix = namespace.perform(context) + "/" + prefix
 
     armPackage = f'{arm}_description'
@@ -56,6 +55,7 @@ def launch_setup(context, *args, **kwargs):
         ' namespace:=', namespace,
         ' prefix:=', prefix,
         ' gripper:=', gripper,
+        ' name:=', robot_name,
         ' use_camera:=', LaunchConfiguration('use_camera')
     ])
 
