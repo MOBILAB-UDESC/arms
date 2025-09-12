@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SRDF Configuration Template for Gen3 Lite Robot with Kinova 2F Lite Gripper
+
+    Template Variables:
+    - <robot_name>: Will be replaced with the actual robot name at launch time
+    - <robot_prefix>: Will be replaced with joint/link prefix at launch time
+-->
+<robot name="<robot_name>">
+    <!-- PLANNING GROUPS -->
+    <group name="Arm">
+        <joint name="<robot_prefix>base_joint"/>
+        <joint name="<robot_prefix>joint_1"/>
+        <joint name="<robot_prefix>joint_2"/>
+        <joint name="<robot_prefix>joint_4"/>
+        <joint name="<robot_prefix>joint_3"/>
+        <joint name="<robot_prefix>joint_5"/>
+        <joint name="<robot_prefix>joint_6"/>
+        <joint name="<robot_prefix>end_effector"/>
+    </group>
+    <group name="gripper">
+        <joint name="<robot_prefix>gripper_base_joint"/>
+        <joint name="<robot_prefix>left_finger_bottom_joint"/>
+        <joint name="<robot_prefix>left_finger_tip_joint"/>
+        <joint name="<robot_prefix>right_finger_tip_joint"/>
+        <joint name="<robot_prefix>right_finger_bottom_joint"/>
+    </group>
+
+    <!-- GROUP STATES: Purpose: Predefined joint configurations for common robot poses -->
+    <!-- Arm group states -->
+    <group_state name="zero" group="Arm">
+        <joint name="<robot_prefix>joint_1" value="0"/>
+        <joint name="<robot_prefix>joint_2" value="0"/>
+        <joint name="<robot_prefix>joint_3" value="0"/>
+        <joint name="<robot_prefix>joint_4" value="0"/>
+        <joint name="<robot_prefix>joint_5" value="0"/>
+        <joint name="<robot_prefix>joint_6" value="0"/>
+    </group_state>
+    <group_state name="hook" group="Arm">
+        <joint name="<robot_prefix>joint_1" value="0.1333"/>
+        <joint name="<robot_prefix>joint_2" value="0.3317"/>
+        <joint name="<robot_prefix>joint_3" value="1.5429"/>
+        <joint name="<robot_prefix>joint_4" value="1.5657"/>
+        <joint name="<robot_prefix>joint_5" value="1.5515"/>
+        <joint name="<robot_prefix>joint_6" value="1.6232"/>
+    </group_state>
+
+    <!-- gripper group states -->
+    <group_state name="close" group="gripper">
+        <joint name="<robot_prefix>right_finger_bottom_joint" value="0"/>
+    </group_state>
+    <group_state name="half-close" group="gripper">
+        <joint name="<robot_prefix>right_finger_bottom_joint" value="0.45"/>
+    </group_state>
+    <group_state name="open" group="gripper">
+        <joint name="<robot_prefix>right_finger_bottom_joint" value="0.9"/>
+    </group_state>
+
+    <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
+    <end_effector name="gripper" parent_link="<robot_prefix>end_effector_link" group="gripper"/>
+    <!--PASSIVE JOINT: Purpose: this element is used to mark joints that are not actuated-->
+    <passive_joint name="<robot_prefix>left_finger_tip_joint"/>
+    <passive_joint name="<robot_prefix>right_finger_tip_joint"/>
+    <passive_joint name="<robot_prefix>left_finger_bottom_joint"/>
+
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>base_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>forearm_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>lower_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>shoulder_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>shoulder_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>gripper_base_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>left_finger_dist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>left_finger_prox_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>lower_wrist_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>right_finger_dist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>right_finger_prox_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>shoulder_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>upper_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>gripper_base_link" link2="<robot_prefix>left_finger_dist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>gripper_base_link" link2="<robot_prefix>left_finger_prox_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>gripper_base_link" link2="<robot_prefix>lower_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>gripper_base_link" link2="<robot_prefix>right_finger_dist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>gripper_base_link" link2="<robot_prefix>right_finger_prox_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>gripper_base_link" link2="<robot_prefix>upper_wrist_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>left_finger_dist_link" link2="<robot_prefix>left_finger_prox_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>left_finger_dist_link" link2="<robot_prefix>lower_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>left_finger_dist_link" link2="<robot_prefix>right_finger_dist_link" reason="Default"/>
+    <disable_collisions link1="<robot_prefix>left_finger_dist_link" link2="<robot_prefix>right_finger_prox_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>left_finger_dist_link" link2="<robot_prefix>upper_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>left_finger_prox_link" link2="<robot_prefix>lower_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>left_finger_prox_link" link2="<robot_prefix>right_finger_dist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>left_finger_prox_link" link2="<robot_prefix>right_finger_prox_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>left_finger_prox_link" link2="<robot_prefix>upper_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>lower_wrist_link" link2="<robot_prefix>right_finger_dist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>lower_wrist_link" link2="<robot_prefix>right_finger_prox_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>lower_wrist_link" link2="<robot_prefix>upper_wrist_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>right_finger_dist_link" link2="<robot_prefix>right_finger_prox_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>right_finger_dist_link" link2="<robot_prefix>upper_wrist_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>right_finger_prox_link" link2="<robot_prefix>upper_wrist_link" reason="Never"/>
+</robot>

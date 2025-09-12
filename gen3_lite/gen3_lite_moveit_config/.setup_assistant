@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: gen3_lite_description
+    relative_path: urdf/gen3_lite.urdf.xacro
+    xacro_args: gripper:=kinova_2f_lite
+    relative_path: config/gen3_lite_kinova_2f_lite/gen3_lite.srdf
+  package_settings:
+    author_name: nilton
+    author_email: nilton.csv18@edu.udesc.br
+    generated_timestamp: 1756908386
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - position
+    state:
+      - position
+      - velocity
