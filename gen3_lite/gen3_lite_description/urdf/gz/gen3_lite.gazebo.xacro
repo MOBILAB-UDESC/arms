@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
-  <xacro:macro name="gen3_lite_gazebo" params="prefix use_camera">
+  <xacro:macro name="gen3_lite_gazebo" params="parent prefix use_camera">
 
     <gazebo reference="${prefix}base_link">
         <material>Kortex/Gray</material>
@@ -50,14 +50,16 @@
     </xacro:if>
 
     <!-- ROS2 CONTROL -->
-    <gazebo>
-      <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <ros>
-          <namespace>$(arg namespace)</namespace>
-        </ros>
-        <parameters>$(find arms_bringup)/config/ros2_control.yaml</parameters>
-      </plugin>
-    </gazebo>
-
+    <!-- condition to avoid conflicts when launching the arm as an accessory. -->
+    <xacro:if value="${parent == 'world'}">
+      <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          <ros>
+            <namespace>$(arg namespace)</namespace>
+          </ros>
+          <parameters>$(find arms_bringup)/config/ros2_control.yaml</parameters>
+        </plugin>
+      </gazebo>
+    </xacro:if>
   </xacro:macro>
 </robot>

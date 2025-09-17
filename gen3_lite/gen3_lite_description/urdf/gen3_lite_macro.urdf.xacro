@@ -235,7 +235,7 @@
 
         <xacro:if value="${sim_gazebo}">
             <xacro:include filename="$(find gen3_lite_description)/urdf/gz/gen3_lite.gazebo.xacro" />
-            <xacro:gen3_lite_gazebo prefix="${prefix}" use_camera="${use_camera}" />
+            <xacro:gen3_lite_gazebo parent="${parent}" prefix="${prefix}" use_camera="${use_camera}" />
         </xacro:if>
 
         <xacro:include filename="$(find gen3_lite_description)/urdf/ros2_control/gen3_lite_ros2_control.xacro" />
