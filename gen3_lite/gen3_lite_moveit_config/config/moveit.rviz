@@ -4,14 +4,10 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /MTC1/Status1
-        - /MotionPlanning1/Scene Geometry1
-        - /MotionPlanning1/Scene Robot1
-        - /MotionPlanning1/Planning Request1
-        - /MotionPlanning1/Planning Metrics1
-        - /MotionPlanning1/Planned Path1
+        - /TF1/Frames1
+        - /TF1/Tree1
       Splitter Ratio: 0.5833333134651184
-    Tree Height: 191
+    Tree Height: 302
   - Class: nav2_rviz_plugins/Navigation 2
     Name: Navigation 2
   - Class: moveit_task_constructor/Motion Planning Tasks
@@ -23,22 +19,20 @@ Panels:
     Name: Motion Planning Tasks
     Tasks View:
       property_splitter:
-        - 668
-        - 223
+        - 644
+        - 215
       solution_sorting:
         column: 0
         order: 1
       solutions_splitter:
-        - 332
-        - 166
+        - 358
+        - 179
       solutions_view_columns: ~
       tasks_view_columns:
-        - 247
+        - 273
         - 23
         - 23
         - 37
-  - Class: rviz_visual_tools/RvizVisualToolsGui
-    Name: RvizVisualToolsGui
 Visualization Manager:
   Class: ""
   Displays:
@@ -60,16 +54,164 @@ Visualization Manager:
       Plane Cell Count: 1000
       Reference Frame: <Fixed Frame>
       Value: true
+    - Alpha: 1
+      Class: rviz_default_plugins/RobotModel
+      Collision Enabled: false
+      Description File: ""
+      Description Source: Topic
+      Description Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: robot_description
+      Enabled: true
+      Links:
+        All Links Enabled: true
+        Expand Joint Details: false
+        Expand Link Details: false
+        Expand Tree: false
+        Link Tree Style: Links in Alphabetic Order
+        arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        dummy_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        end_effector_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        forearm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper_base_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_finger_dist_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        left_finger_prox_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        lower_wrist_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_finger_dist_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        right_finger_prox_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        shoulder_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        tool_frame:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        upper_wrist_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        world:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+      Mass Properties:
+        Inertia: false
+        Mass: false
+      Name: Arm
+      TF Prefix: ""
+      Update Interval: 0
+      Value: true
+      Visual Enabled: true
     - Class: rviz_default_plugins/TF
       Enabled: true
       Filter (blacklist): ""
       Filter (whitelist): ""
       Frame Timeout: 15
+      Frames:
+        All Enabled: false
+        arm_link:
+          Value: false
+        base_link:
+          Value: false
+        dummy_link:
+          Value: false
+        end_effector_link:
+          Value: true
+        forearm_link:
+          Value: false
+        gripper_base_link:
+          Value: false
+        left_finger_dist_link:
+          Value: false
+        left_finger_prox_link:
+          Value: false
+        lower_wrist_link:
+          Value: false
+        right_finger_dist_link:
+          Value: false
+        right_finger_prox_link:
+          Value: false
+        shoulder_link:
+          Value: false
+        tool_frame:
+          Value: false
+        upper_wrist_link:
+          Value: false
+        world:
+          Value: true
       Marker Scale: 0.20000000298023224
       Name: TF
-      Show Arrows: false
-      Show Axes: false
-      Show Names: false
+      Show Arrows: true
+      Show Axes: true
+      Show Names: true
+      Tree:
+        world:
+          base_link:
+            shoulder_link:
+              arm_link:
+                forearm_link:
+                  lower_wrist_link:
+                    upper_wrist_link:
+                      end_effector_link:
+                        dummy_link:
+                          gripper_base_link:
+                            left_finger_prox_link:
+                              left_finger_dist_link:
+                                {}
+                            right_finger_prox_link:
+                              right_finger_dist_link:
+                                {}
+                          tool_frame:
+                            {}
       Update Interval: 0
       Value: true
     - Class: rviz_default_plugins/Axes
@@ -94,7 +236,7 @@ Visualization Manager:
           Expand Joint Details: false
           Expand Link Details: false
           Expand Tree: false
-          Link Tree Style: Links in Alphabetic Order
+          Link Tree Style: ""
         Robot Alpha: 0.5
         Show Robot Collision: false
         Show Robot Visual: true
@@ -145,17 +287,17 @@ Visualization Manager:
           Expand Joint Details: false
           Expand Link Details: false
           Expand Tree: false
-          Link Tree Style: Links in Alphabetic Order
-        Loop Animation: true
+          Link Tree Style: ""
+        Loop Animation: false
         Robot Alpha: 0.5
         Robot Color: 150; 50; 150
         Show Robot Collision: false
         Show Robot Visual: true
         Show Trail: false
-        State Display Time: 0.5s
-        Trail Step Size: 10
+        State Display Time: 3x
+        Trail Step Size: 1
         Trajectory Topic: /display_planned_path
-        Use Sim Time: true
+        Use Sim Time: false
       Planning Metrics:
         Payload: 1
         Show Joint Torques: false
@@ -169,7 +311,7 @@ Visualization Manager:
         Goal State Color: 250; 128; 0
         Interactive Marker Size: 0
         Joint Violation Color: 255; 0; 255
-        Planning Group: Arm
+        Planning Group: ""
         Query Goal State: true
         Query Start State: false
         Show Workspace: false
@@ -191,7 +333,7 @@ Visualization Manager:
           Expand Joint Details: false
           Expand Link Details: false
           Expand Tree: false
-          Link Tree Style: Links in Alphabetic Order
+          Link Tree Style: ""
         Robot Alpha: 1
         Show Robot Collision: false
         Show Robot Visual: true
@@ -216,45 +358,43 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 3.154383897781372
+      Distance: 2.951226234436035
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.024294767528772354
-        Y: 0.02077421545982361
-        Z: 0.5618346333503723
+        X: 0.10980940610170364
+        Y: 0.10948944091796875
+        Z: 0.5270469188690186
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.48479604721069336
+      Pitch: 0.6147961020469666
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 5.320423126220703
+      Yaw: 3.8804285526275635
     Saved: ~
 Window Geometry:
+  "":
+    collapsed: false
+  " - Slider":
+    collapsed: false
+  " - Trajectory Slider":
+    collapsed: false
   Displays:
     collapsed: false
-  Height: 1043
+  Height: 1011
   Hide Left Dock: false
   Hide Right Dock: false
-  MTC - Slider:
-    collapsed: false
   Motion Planning Tasks:
-    collapsed: false
-  MotionPlanning:
-    collapsed: false
-  MotionPlanning - Trajectory Slider:
     collapsed: false
   Navigation 2:
     collapsed: false
-  QMainWindow State: 000000ff00000000fd000000020000000000000210000003b5fc0200000008fb000000100044006900730070006c006100790073010000003f0000014c000000cc00fffffffb00000018004e0061007600690067006100740069006f006e00200032000000029a0000013a0000006f00fffffffb000000120020002d00200053006c00690064006500720000000000ffffffff0000000000000000fb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000000000000000fb00000018004d005400430020002d00200053006c00690064006500720000000000ffffffff0000004400fffffffb00000044004d006f00740069006f006e0050006c0061006e006e0069006e00670020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720100000191000000440000004400fffffffb0000001c004d006f00740069006f006e0050006c0061006e006e0069006e006701000001db000001cf0000019600fffffffb00000024005200760069007a00560069007300750061006c0054006f006f006c007300470075006901000003b0000000440000004400ffffff00000001000001f6000003b5fc0200000001fb0000002a004d006f00740069006f006e00200050006c0061006e006e0069006e00670020005400610073006b0073010000003f000003b5000000ec00ffffff0000032c000003b500000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
-  RvizVisualToolsGui:
-    collapsed: false
+  QMainWindow State: 000000ff00000000fd0000000200000000000001ee00000395fc0200000005fb000000100044006900730070006c006100790073010000003f000001bb000000cc00fffffffb00000018004e0061007600690067006100740069006f006e00200032000000029a0000013a0000006f00fffffffb000000120020002d00200053006c00690064006500720000000000ffffffff0000004400fffffffb000000280020002d0020005400720061006a006500630074006f0072007900200053006c00690064006500720000000000ffffffff0000004400fffffffbffffffff0100000200000001d40000019500ffffff000000010000021d00000395fc0200000001fb0000002a004d006f00740069006f006e00200050006c0061006e006e0069006e00670020005400610073006b0073010000003f00000395000000ec00ffffff000003270000039500000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
   Width: 1854
-  X: 66
-  Y: 0
+  X: 1986
+  Y: 32

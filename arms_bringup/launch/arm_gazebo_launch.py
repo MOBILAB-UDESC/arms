@@ -9,14 +9,13 @@ def bridge_camera(context, *args, **kwargs):
     """Create and return a ROS 2 node to bridge the robot's camera topics from Gazebo."""
     # Dynamically set topic names based on the 'prefix' launch argument.
     prefix = LaunchConfiguration('prefix', default='').perform(context)
-    camera_topic = f'/{prefix}camera_head' if prefix else '/camera_head'
+    camera_topic = f'/{prefix}camera_head'
 
     camera_bridge_node = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         output='screen',
         name='camera_bridge',
-        namespace=args[0],
         arguments=[
             # ros2_topic@ros2_type[gz_type          gz->ros2
             f'{camera_topic}/image' + '@sensor_msgs/msg/Image' + '[gz.msgs.Image',
@@ -31,14 +30,11 @@ def bridge_camera(context, *args, **kwargs):
 
 def generate_launch_description():
     """Spawn the robot and optionally bridging its camera."""
-    namespace = LaunchConfiguration('namespace', default='')
-
     # Spawn the robot in Gazebo using the robot_description topic
     gazebo_spawn_node = Node(
         package='ros_gz_sim',
         executable='create',
         output='screen',
-        namespace=namespace,
         arguments=[
             '-topic', 'robot_description',
             '-name', LaunchConfiguration('name', default='gen3_lite'),
@@ -54,7 +50,6 @@ def generate_launch_description():
         gazebo_spawn_node,
         OpaqueFunction(
             function=bridge_camera,
-            args=[namespace],
             condition=IfCondition(LaunchConfiguration('use_camera', default=False))
         ),
     ])

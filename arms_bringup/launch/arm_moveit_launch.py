@@ -14,8 +14,7 @@ from arms_utils.replace_string import replace_string
 
 
 def launch_setup(context, *args, **kwargs):
-    # not working with namespace yet.
-
+    """Setup the moveit node and rviz2 if required."""
     rviz = LaunchConfiguration('rviz')
     use_sim_time = LaunchConfiguration('use_sim_time')
     warehouse_sqlite_path = LaunchConfiguration('warehouse_sqlite_path')
@@ -23,19 +22,13 @@ def launch_setup(context, *args, **kwargs):
     arm = LaunchConfiguration('arm').perform(context)
     gripper = LaunchConfiguration('gripper').perform(context)
     prefix = LaunchConfiguration('prefix').perform(context)
-    namespace = LaunchConfiguration('namespace').perform(context)
 
-    robot_name = f'{prefix}{arm}'
-
-    if namespace:
-        prefix = f'{namespace}/{prefix}'
-        print(f'prefix: {prefix}')
+    robot_name = arm
 
     pkg_path = get_package_share_directory(f'{arm}_moveit_config')
 
     moveit_config = (
-        MoveItConfigsBuilder(robot_name=f'{arm}')
-        # MoveItConfigsBuilder(robot_name=robot_name, package_name='gen3_lite_moveit_config')
+        MoveItConfigsBuilder(robot_name=arm)
         .joint_limits(replace_string(
             f'{pkg_path}/config/{arm}_{gripper}/joint_limits_template.yaml',
             ['<robot_prefix>'],
@@ -77,7 +70,6 @@ def launch_setup(context, *args, **kwargs):
         package='moveit_ros_move_group',
         executable='move_group',
         output='screen',
-        # namespace=namespace,
         parameters=[
             moveit_config.to_dict(),
             warehouse_ros_config,
@@ -97,7 +89,6 @@ def launch_setup(context, *args, **kwargs):
         condition=IfCondition(rviz),
         executable='rviz2',
         name='rviz2_moveit',
-        # namespace=namespace,
         output='log',
         arguments=['-d', rviz_config_file],
         parameters=[
@@ -137,11 +128,6 @@ def generate_launch_description():
                 'kinova_2f_lite',
             ],
             description='Gripper model'
-        ),
-        DeclareLaunchArgument(
-            'namespace',
-            default_value='',
-            description='Top-level namespace'
         ),
         DeclareLaunchArgument(
             'prefix',

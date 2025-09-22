@@ -14,7 +14,7 @@ def launch_setup(context, *args, **kwargs):
 
     This function performs the following tasks:
     - Dynamically determine package paths based on the selected arm (and gripper if enabled).
-    - Replace the <robot_prefix> placeholder in the ros2_control.yaml file with the actual namespace/prefix.
+    - Replace the <robot_prefix> placeholder in the ros2_control.yaml file with the actual prefix.
     Controllers are launched in sequence:
         1. joint_state_broadcaster
         2. arm_controller (after joint_state_broadcaster exits)
@@ -25,15 +25,12 @@ def launch_setup(context, *args, **kwargs):
 
     arm = LaunchConfiguration('arm', default='gen3_lite').perform(context)
     gripper = LaunchConfiguration('gripper', default='').perform(context)
-    namespace = LaunchConfiguration('namespace', default='')
     ros2_control_params = LaunchConfiguration(
         'ros2_control_params',
         default=PathJoinSubstitution([packagePath, 'config', 'ros2_control.yaml'])
     ).perform(context)
     use_sim_time = LaunchConfiguration('use_sim_time', default=True)
 
-    # Replaces <robot_prefix> in ros2_control.yaml with the namespace/prefix
-    # from arm.launch.py, so joints are correctly namespaced.
     ros2_control_params = ReplaceString(
         source_file=ros2_control_params,
         replacements={'<robot_prefix>': (LaunchConfiguration('prefix', default=''))},
@@ -44,7 +41,6 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner',
         output='screen',
         name='joint_state_broadcaster',
-        namespace=namespace,
         arguments=['joint_state_broadcaster'],
         parameters=[{'use_sim_time': use_sim_time}],
     )
@@ -55,7 +51,6 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner',
         output='screen',
         name='joint_trajectory_controller',
-        namespace=namespace,
         arguments=[f'{arm}_arm_controller', '--param-file', ros2_control_params],
         parameters=[{'use_sim_time': use_sim_time}],
     )
@@ -74,7 +69,6 @@ def launch_setup(context, *args, **kwargs):
             executable='spawner',
             output='screen',
             name='gripper_controller',
-            namespace=namespace,
             arguments=[f'{gripper}_gripper_controller', '--param-file', ros2_control_params],
             parameters=[{'use_sim_time': use_sim_time}],
         )

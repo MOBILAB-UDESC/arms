@@ -1,12 +1,12 @@
 from ament_index_python.packages import get_package_share_directory
-
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
     OpaqueFunction
 )
-from launch.conditions import IfCondition, UnlessCondition
+from launch.conditions import IfCondition
+from launch.conditions import UnlessCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import (
     LaunchConfiguration,
@@ -22,7 +22,7 @@ def launch_setup(context, *args, **kwargs):
 
     This function performs the following tasks:
     - Dynamically determine package paths based on the selected arm.
-    - Generate the robot description using xacro with the specified namespace, prefix, and gripper.
+    - Generate the robot description using xacro with the specified prefix, and gripper.
     - Launch the robot_state_publisher node to publish the robot's state.
     - Optionally launch the joint_state_publisher_gui node if simulation time is disabled.
     - Optionally launch RViz2 if visualization is enabled.
@@ -34,25 +34,19 @@ def launch_setup(context, *args, **kwargs):
     """
     arm = LaunchConfiguration('arm').perform(context)
     use_sim_time = LaunchConfiguration('use_sim_time')
-    namespace = LaunchConfiguration('namespace')
     prefix = LaunchConfiguration('prefix').perform(context)
     gripper = LaunchConfiguration('gripper')
 
-    # Modify prefix to namespace/prefix if namespace is used
-    if namespace.perform(context):
-        prefix = namespace.perform(context) + "/" + prefix
-
-    armPackage = f'{arm}_description'
-    armRviz2File = f'{arm}.rviz'
-    armpackagePath = get_package_share_directory(armPackage)
+    arm_pkg = f'{arm}_description'
+    arm_pkg_path = get_package_share_directory(arm_pkg)
+    arm_rviz2_file = f'{arm}.rviz'
     current_package_path = get_package_share_directory("arms_bringup")
-    robot_name = f'{prefix}{arm}'
+    robot_name = arm
 
     robot_description = Command([
         'xacro ',
-        PathJoinSubstitution([armpackagePath, 'urdf', arm]),
+        PathJoinSubstitution([arm_pkg_path, 'urdf', arm]),
         '.urdf.xacro',
-        ' namespace:=', namespace,
         ' prefix:=', prefix,
         ' gripper:=', gripper,
         ' name:=', robot_name,
@@ -63,10 +57,7 @@ def launch_setup(context, *args, **kwargs):
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
-        name='robot_state_publisher',
-        namespace=namespace,
         parameters=[{
-            #  'frame_prefix': [namespace, '/'],
             'use_sim_time': use_sim_time,
             'robot_description': robot_description
         }],
@@ -78,11 +69,9 @@ def launch_setup(context, *args, **kwargs):
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         output='screen',
-        name='joint_state_publisher_gui',
-        namespace=namespace,
     )
 
-    rviz2_path = PathJoinSubstitution([armpackagePath, 'rviz', armRviz2File])
+    rviz2_path = PathJoinSubstitution([arm_pkg_path, 'rviz', arm_rviz2_file])
 
     rviz2_node = Node(
         condition=IfCondition(LaunchConfiguration('rviz')),
@@ -90,7 +79,6 @@ def launch_setup(context, *args, **kwargs):
         executable="rviz2",
         name="arm_rviz2",
         output="screen",
-        namespace=namespace,
         parameters=[{'use_sim_time': use_sim_time}],
         arguments=['-d', rviz2_path],
     )
@@ -101,7 +89,6 @@ def launch_setup(context, *args, **kwargs):
         )),
         condition=IfCondition(LaunchConfiguration('use_sim_time')),
         launch_arguments={
-            'namespace': namespace,
             'name': robot_name,
             'x': LaunchConfiguration('x'),
             'y': LaunchConfiguration('y'),
@@ -123,7 +110,6 @@ def launch_setup(context, *args, **kwargs):
         launch_arguments={
             'use_sim_time': use_sim_time,
             'ros2_control_params': robot_controllers,
-            'namespace': namespace,
             'prefix': prefix,
             'gripper': gripper
         }.items()
@@ -177,11 +163,6 @@ def generate_launch_description():
             default_value='false',
             choices=['true', 'false'],
             description='Whether to use a camera'
-        ),
-        DeclareLaunchArgument(
-            'namespace',
-            default_value='',
-            description='Top-level namespace'
         ),
         DeclareLaunchArgument(
             'rviz',

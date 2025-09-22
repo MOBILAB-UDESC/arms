@@ -9,8 +9,6 @@
     <xacro:arg name="parent" default="world"/>
     <xacro:arg name="prefix" default=""/>
 
-    <xacro:arg name="namespace" default='' />
-
     <xacro:arg name="arm" default="gen3_lite" />
     <xacro:arg name="gripper" default="" />
 

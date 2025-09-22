@@ -54,9 +54,6 @@
     <xacro:if value="${parent == 'world'}">
       <gazebo>
         <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-          <ros>
-            <namespace>$(arg namespace)</namespace>
-          </ros>
           <parameters>$(find arms_bringup)/config/ros2_control.yaml</parameters>
         </plugin>
       </gazebo>

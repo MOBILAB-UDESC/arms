@@ -17,8 +17,8 @@ def replace_string(file_path, old_strings, new_strings):
     if len(old_strings) != len(new_strings):
         raise ValueError("old_strings and new_strings must be of the same length.")
 
-    with open(file_path, 'r') as srdf_file:
-        srdf_content = srdf_file.read()
+    with open(file_path, 'r') as file:
+        content = file.read()
 
     file_name = os.path.basename(file_path)
 
@@ -28,12 +28,12 @@ def replace_string(file_path, old_strings, new_strings):
     base = re.sub(r'_template\.[^.]+$', '', file_name)
 
     for old_string, new_string in zip(old_strings, new_strings):
-        srdf_content = srdf_content.replace(old_string, new_string)
+        content = content.replace(old_string, new_string)
 
     new_path = os.path.join(os.path.dirname(file_path), f'{base}.{ext}')
 
     with open(new_path, 'w') as f:
-        f.write(srdf_content)
+        f.write(content)
 
     # print(f'New path: {new_path}')
 
