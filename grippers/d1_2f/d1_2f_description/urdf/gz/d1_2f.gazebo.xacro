@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="d1_2f_gazebo" params="prefix">
+
+    <gazebo reference="${prefix}Link_L">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}Link_R">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+  </xacro:macro>
+</robot>

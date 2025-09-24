@@ -147,6 +147,7 @@ def generate_launch_description():
             default_value='',
             choices=[
                 '',  # No gripper
+                'd1_2f',  # Standard gripper for Unitree D1 arm
                 'kinova_2f_lite',
                 'robotiq_2f_85',
             ],

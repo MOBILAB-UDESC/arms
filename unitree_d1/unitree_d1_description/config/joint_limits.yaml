@@ -1,0 +1,31 @@
+joint_limits:
+  joint_1:
+    min_position: -2.35
+    max_position: 2.35
+    max_velocity: 1.05
+    max_effort: 3.3
+  joint_2:
+    min_position: -1.57
+    max_position: 1.57
+    max_velocity: 1.05
+    max_effort: 3.3
+  joint_3:
+    min_position: -1.57
+    max_position: 1.57
+    max_velocity: 1.05
+    max_effort: 1.7
+  joint_4:
+    min_position: -2.35
+    max_position: 2.35
+    max_velocity: 1.73
+    max_effort: 1.7
+  joint_5:
+    min_position: -1.57
+    max_position: 1.57
+    max_velocity: 1.73
+    max_effort: 1.7
+  joint_6:
+    min_position: -2.35
+    max_position: 2.35
+    max_velocity: 1.73
+    max_effort: 1.7

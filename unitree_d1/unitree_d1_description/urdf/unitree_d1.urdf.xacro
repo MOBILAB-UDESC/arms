@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<robot name="$(arg name)" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Arguments -->
+    <xacro:arg name="sim_gazebo" default="true" />
+    <xacro:arg name="use_camera" default="true" />
+    <xacro:arg name="parent" default="world"/>
+    <xacro:arg name="prefix" default=""/>
+
+    <xacro:arg name="gripper" default="" />
+
+    <xacro:arg name="joint_limits" default="$(find unitree_d1_description)/config/joint_limits.yaml" />
+    <xacro:arg name="initial_position" default="$(find unitree_d1_description)/config/initial_position.yaml" />
+
+    <xacro:include filename="$(find unitree_d1_description)/urdf/unitree_d1_macro.urdf.xacro" />
+    <xacro:include filename="$(find unitree_d1_description)/urdf/macros.urdf.xacro" />
+
+    <link name="world"/>
+
+    <xacro:load_arm parent="$(arg parent)"
+            prefix="$(arg prefix)"
+            sim_gazebo="$(arg sim_gazebo)"
+            gripper="$(arg gripper)"
+            use_camera="$(arg use_camera)" >
+        <origin xyz="0 0 0" rpy="0 0 0" />
+    </xacro:load_arm>
+
+    <xacro:unless value="${not '$(arg gripper)'}" >
+        <xacro:include filename="$(find d1_2f_description)/urdf/d1_2f_macro.urdf.xacro" />
+
+        <xacro:load_gripper parent="${last_arm_link}"
+                prefix="$(arg prefix)"
+                sim_gazebo="$(arg sim_gazebo)" >
+            <!-- <origin xyz="-0.0056012 -0.029636 0.0706" rpy="-1.5714 -1.5708 0" /> -->
+            <origin xyz="0.0 0.0 0.0" rpy="0.0 0.0 0.0" />
+        </xacro:load_gripper>
+    </xacro:unless>
+
+</robot>

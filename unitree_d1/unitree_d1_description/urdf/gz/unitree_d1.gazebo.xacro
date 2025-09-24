@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="unitree_d1_gazebo" params="parent prefix use_camera">
+
+    <gazebo reference="${prefix}base_link">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}Link1">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}Link2">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}Link3">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}Link4">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}Link5">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <gazebo reference="${prefix}Link6">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+    <xacro:if value="${use_camera}">
+      <gazebo reference="${prefix}camera_head_link">
+        <sensor name="${prefix}camera_head" type="rgbd_camera">
+          <camera>
+            <horizontal_fov>1.5184</horizontal_fov>
+            <image>
+              <width>424</width>
+              <height>240</height>
+            </image>
+            <clip>
+              <near>0.05</near>
+              <far>1.5</far>
+            </clip>
+          </camera>
+          <always_on>1</always_on>
+          <gz_frame_id>${prefix}camera_head_link</gz_frame_id>
+          <topic>${prefix}camera_head</topic>
+          <update_rate>5</update_rate>
+          <visualize>true</visualize>
+        </sensor>
+      </gazebo>
+    </xacro:if>
+
+    <!-- ROS2 CONTROL -->
+    <!-- condition to avoid conflicts when launching the arm as an accessory. -->
+    <xacro:if value="${parent == 'world'}">
+      <gazebo>
+        <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+          <parameters>$(find arms_bringup)/config/ros2_control.yaml</parameters>
+        </plugin>
+      </gazebo>
+    </xacro:if>
+  </xacro:macro>
+</robot>
