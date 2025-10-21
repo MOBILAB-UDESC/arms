@@ -12,7 +12,6 @@ def generate_launch_description():
     packagePath = get_package_share_directory("arms_bringup")
 
     gazebo_path = PathJoinSubstitution([packagePath, 'worlds', LaunchConfiguration('world_name')])
-
     gazebo_world_node = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             PathJoinSubstitution([
@@ -46,7 +45,7 @@ def generate_launch_description():
                 'mobilab.sdf',
                 'playground.sdf'
             ],
-            description='Gazebo world file (custom worlds should be added to the "worlds" folder of this package'
+            description='Gazebo world file (custom worlds must be added to the "worlds" folder of this package'
         ),
     ]
 

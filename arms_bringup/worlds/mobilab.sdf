@@ -22,7 +22,7 @@
       <background>0.699999988 0.699999988 0.699999988 1</background>
       <shadows>true</shadows>
     </scene>
-    
+
     <model name='ground_plane'>
       <static>true</static>
       <link name='link'>
@@ -179,7 +179,7 @@
       <static>true</static>
       <self_collide>false</self_collide>
     </model>
-    
+
     <model name='window_desk_1'>
       <pose>0.0 1.7 1.25 0.0 0.0 0.0</pose>
       <link name='box_link'>
@@ -277,7 +277,7 @@
       <static>true</static>
       <self_collide>false</self_collide>
     </model>
-    
+
     <model name='window_desk_2'>
       <pose>2.698 1.7 1.25 0.0 0.0 0.0</pose>
       <link name='box_link'>
@@ -784,7 +784,7 @@
       <static>true</static>
       <self_collide>false</self_collide>
     </model>
-    
+
     <model name='wall_room_4_3'>
       <pose>3.0 -6.65 2.485 0.0 0.0 0</pose>
       <link name='box_link'>
@@ -834,7 +834,7 @@
       <static>true</static>
       <self_collide>false</self_collide>
     </model>
-    
+
     <model name='window_room_4'>
       <pose>3.0 -6.65 1.473650 0.0 0.0 0</pose>
       <link name='box_link'>

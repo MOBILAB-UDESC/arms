@@ -1,13 +1,33 @@
-/**/controller_manager:
+controller_manager:
   ros__parameters:
     update_rate: 100  # Hz
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-/**/gen3_lite_arm_controller:
+    gen3_lite_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    kinova_2f_lite_gripper_controller:
+      type: position_controllers/GripperActionController
+
+    unitree_d1_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    d1_2f_gripper_controller:
+      type: position_controllers/GripperActionController
+
+    unitree_z1_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    z1_1f_gripper_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+# ==================================================================
+#                           KINOVA GEN3 LITE
+# ==================================================================
+gen3_lite_arm_controller:
   ros__parameters:
-    type: joint_trajectory_controller/JointTrajectoryController
     joints:
       - <robot_prefix>joint_1
       - <robot_prefix>joint_2
@@ -24,11 +44,10 @@
     allow_integration_in_goal_trajectories: true
     allow_nonzero_velocity_at_trajectory_end: true
 
-/**/kinova_2f_lite_gripper_controller:
+kinova_2f_lite_gripper_controller:
   ros__parameters:
     # type: parallel_gripper_action_controller/GripperActionController
-    type: position_controllers/GripperActionController
-    joint: "<robot_prefix>right_finger_bottom_joint"
+    joint: '<robot_prefix>right_finger_bottom_joint'
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
     max_effort: 100.0
@@ -36,9 +55,11 @@
     stall_velocity_threshold: 0.001
     stall_timeout: 1.0
 
-/**/unitree_d1_arm_controller:
+# ==================================================================
+#                           UNITREE D1
+# ==================================================================
+unitree_d1_arm_controller:
   ros__parameters:
-    type: joint_trajectory_controller/JointTrajectoryController
     joints:
       - <robot_prefix>joint_1
       - <robot_prefix>joint_2
@@ -50,19 +71,66 @@
       - position
     state_interfaces:
       - position
-      - velocity
 
-    allow_integration_in_goal_trajectories: true
-    allow_nonzero_velocity_at_trajectory_end: true
+    action_monitor_rate: 20.0
 
-/**/d1_2f_gripper_controller:
+    allow_partial_joints_goal: false
+    interpolate_from_desired_state: true
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0
+
+d1_2f_gripper_controller:
   ros__parameters:
-    # type: parallel_gripper_action_controller/GripperActionController
-    type: position_controllers/GripperActionController
-    joint: "<robot_prefix>joint_L"
+    joint: '<robot_prefix>joint_L'
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
     max_effort: 100.0
     allow_stalling: false
     stall_velocity_threshold: 0.001
     stall_timeout: 1.0
+
+# ==================================================================
+#                           UNITREE Z1
+# ==================================================================
+unitree_z1_arm_controller:
+  ros__parameters:
+    joints:
+      - <robot_prefix>joint_1
+      - <robot_prefix>joint_2
+      - <robot_prefix>joint_3
+      - <robot_prefix>joint_4
+      - <robot_prefix>joint_5
+      - <robot_prefix>joint_6
+      # - <robot_prefix>jointGripper
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+    action_monitor_rate: 20.0
+
+    allow_partial_joints_goal: false
+    interpolate_from_desired_state: true
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0
+
+z1_1f_gripper_controller:
+  ros__parameters:
+    joints:
+      - <robot_prefix>jointGripper
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+
+    action_monitor_rate: 20.0
+
+    allow_partial_joints_goal: false
+    interpolate_from_desired_state: true
+    constraints:
+      stopped_velocity_tolerance: 0.01
+      goal_time: 0.0

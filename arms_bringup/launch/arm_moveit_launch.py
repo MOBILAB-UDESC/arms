@@ -1,32 +1,32 @@
-#!/usr/bin/env python3
 import os
-from ament_index_python.packages import get_package_share_directory
 
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, OpaqueFunction
+from launch.actions import DeclareLaunchArgument
+from launch.actions import OpaqueFunction
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch.substitutions import LaunchConfiguration
+from launch.substitutions import PathJoinSubstitution
 from launch_ros.actions import Node
-from launch_ros.substitutions import FindPackageShare
 from moveit_configs_utils import MoveItConfigsBuilder
 
 from arms_utils.replace_string import replace_string
 
 
 def launch_setup(context, *args, **kwargs):
-    """Setup the moveit node and rviz2 if required."""
-    rviz = LaunchConfiguration('rviz')
-    use_sim_time = LaunchConfiguration('use_sim_time')
-    warehouse_sqlite_path = LaunchConfiguration('warehouse_sqlite_path')
-    publish_robot_description_semantic = LaunchConfiguration('publish_robot_description_semantic')
+    """Configure and launch MoveIt motion planning node with optional RViz visualization."""
     arm = LaunchConfiguration('arm').perform(context)
     gripper = LaunchConfiguration('gripper').perform(context)
     prefix = LaunchConfiguration('prefix').perform(context)
+    publish_robot_description_semantic = LaunchConfiguration('publish_robot_description_semantic')
+    rviz = LaunchConfiguration('rviz')
+    use_sim_time = LaunchConfiguration('use_sim_time')
+    warehouse_sqlite_path = LaunchConfiguration('warehouse_sqlite_path')
 
     robot_name = arm
 
+    # Build MoveIt configuration with planning pipelines and robot-specific configs
     pkg_path = get_package_share_directory(f'{arm}_moveit_config')
-
     moveit_config = (
         MoveItConfigsBuilder(robot_name=arm)
         .joint_limits(replace_string(
@@ -82,7 +82,7 @@ def launch_setup(context, *args, **kwargs):
     )
 
     rviz_config_file = PathJoinSubstitution(
-        [FindPackageShare(f'{arm}_moveit_config'), 'config', 'moveit.rviz']
+        [get_package_share_directory(f'{arm}_moveit_config'), 'config', 'moveit.rviz']
     )
     rviz_node = Node(
         package='rviz2',
@@ -112,48 +112,50 @@ def generate_launch_description():
     args = [
         DeclareLaunchArgument(
             'arm',
-            default_value='gen3_lite',
+            default_value='unitree_z1',
             choices=[
                 'gen3_lite',
                 'unitree_d1',
                 'unitree_z1',
             ],
-            description='Arm model'
+            description='Arm model.'
         ),
         DeclareLaunchArgument(
             'gripper',
             default_value='',
             choices=[
-                '',
+                '',  # No gripper
+                'd1_2f',  # Standard gripper for Unitree D1 arm
                 'kinova_2f_lite',
+                'z1_1f',  # Standard gripper for Unitree Z1 arm
             ],
-            description='Gripper model'
+            description='Gripper model.'
         ),
         DeclareLaunchArgument(
             'prefix',
             default_value='',
-            description='Prefix for the link/joint names of the robot'
+            description='Prefix for the link/joint names of the robot.'
         ),
         DeclareLaunchArgument(
             'publish_robot_description_semantic',
             default_value='true',
-            description='Whether to publish robot description semantic',
+            description='Whether to publish robot description semantic.',
         ),
         DeclareLaunchArgument(
             'rviz',
             default_value='true',
             choices=['true', 'false'],
-            description='Whether to execute rviz2'
+            description='Whether to execute rviz2.'
         ),
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='true',
-            description='Whether to use simulation time',
+            default_value='false',
+            description='Whether to use simulation time.',
         ),
         DeclareLaunchArgument(
             'warehouse_sqlite_path',
             default_value=os.path.expanduser('~/.ros/warehouse_ros.sqlite'),
-            description='Path where the warehouse database should be stored',
+            description='Path where the warehouse database should be stored.',
         ),
     ]
 
