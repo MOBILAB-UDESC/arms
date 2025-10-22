@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Propagate last link name information because it is the gripper's parent link -->
+    <xacro:property name="last_arm_link" value="Link6" />
+
+
+    <xacro:macro name="load_arm" params="*origin parent prefix sim_gazebo gripper use_camera">
+        <joint name="${prefix}base_joint" type="fixed">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}" />
+            <child link="${prefix}base_link" />
+        </joint>
+
+        <link name="${prefix}base_link">
+            <inertial>
+                <origin rpy="0 0 0" xyz="${L00_ComX} ${L00_ComY} ${L00_ComZ}" />
+                <mass value="${L00_Mass}" />
+                <inertia
+                    ixx="${L00_Ixx}" ixy="${L00_Ixy}" ixz="${L00_Ixz}"
+                    iyy="${L00_Iyy}" iyz="${L00_Iyz}"
+                    izz="${L00_Izz}" />
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/visual/base_link.dae" />
+                </geometry>
+                <xacro:insert_block name="material_light_grey" />
+            </visual>
+            <collision>
+                <geometry>
+                    <!-- <cylinder length="${motor_height}" radius="${motor_diameter}" /> -->
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/collision/base_link.STL" />
+                </geometry>
+                <origin rpy="0 0 0" xyz="0 0 ${motor_height/2.0}" />
+            </collision>
+        </link>
+
+        <link name="${prefix}Link1">
+            <inertial>
+                <origin rpy="0 0 0" xyz="${L01_ComX} ${L01_ComY} ${L01_ComZ}" />
+                <mass value="${L01_Mass}" />
+                <inertia
+                ixx="${L01_Ixx}" ixy="${L01_Ixy}" ixz="${L01_Ixz}"
+                iyy="${L01_Iyy}" iyz="${L01_Iyz}"
+                izz="${L01_Izz}" />
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/visual/Link1.dae" />
+                </geometry>
+                <xacro:insert_block name="material_light_grey" />
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/collision/Link1.STL" />
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${prefix}joint_1" type="revolute">
+            <origin rpy="0 0 0" xyz="0 0 0.0585" />
+            <parent link="${prefix}base_link" />
+            <child link="${prefix}Link1" />
+            <axis xyz="0 0 1" />
+            <dynamics damping="${jointDamping}" friction="${jointFriction}" />
+            <limit lower="${min_joint_1_pos}" upper="${max_joint_1_pos}"
+                    effort="${joint_1_effort}" velocity="${joint_1_vel}" />
+        </joint>
+
+        <link name="${prefix}Link2">
+            <inertial>
+                <origin rpy="0 0 0" xyz="${L02_ComX} ${L02_ComY} ${L02_ComZ}" />
+                <mass value="${L02_Mass}" />
+                <inertia
+                    ixx="${L02_Ixx}" ixy="${L02_Ixy}" ixz="${L02_Ixz}"
+                    iyy="${L02_Iyy}" iyz="${L02_Iyz}"
+                    izz="${L02_Izz}" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/visual/Link2.dae" />
+                </geometry>
+                <xacro:insert_block name="material_light_grey" />
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/collision/Link2.STL" />
+                </geometry>
+            </collision>
+            <!-- <collision>
+                <geometry>
+                    <cylinder length="${2.0*motor_height}" radius="${motor_diameter}" />
+                </geometry>
+                <origin rpy="${PI/2.0} 0 0" xyz="0 0 0" />
+            </collision> -->
+        </link>
+
+        <joint name="${prefix}joint_2" type="revolute">
+            <origin rpy="0 0 0" xyz="0 0 0.045" />
+            <parent link="${prefix}Link1" />
+            <child link="${prefix}Link2" />
+            <axis xyz="0 1 0" />
+            <dynamics damping="${2*jointDamping}" friction="${2*jointFriction}" />
+            <limit lower="${min_joint_2_pos}" upper="${max_joint_2_pos}"
+                    effort="${2*joint_2_effort}" velocity="${joint_2_vel}" />
+        </joint>
+
+        <link name="${prefix}Link3">
+            <inertial>
+                <origin rpy="0 0 0" xyz="${L03_ComX} ${L03_ComY} ${L03_ComZ}" />
+                <mass value="${L03_Mass}" />
+                <inertia
+                    ixx="${L03_Ixx}" ixy="${L03_Ixy}" ixz="${L03_Ixz}"
+                    iyy="${L03_Iyy}" iyz="${L03_Iyz}"
+                    izz="${L03_Izz}" />
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/visual/Link3.dae" />
+                </geometry>
+                <xacro:insert_block name="material_light_grey" />
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/collision/Link3.STL" />
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${prefix}joint_3" type="revolute">
+            <origin rpy="0 0 0" xyz="-0.35 0 0" />
+            <parent link="${prefix}Link2" />
+            <child link="${prefix}Link3" />
+            <axis xyz="0 1 0" />
+            <dynamics damping="${jointDamping}" friction="${jointFriction}" />
+            <limit lower="${min_joint_3_pos}" upper="${max_joint_3_pos}"
+                    effort="${joint_3_effort}" velocity="${joint_3_vel}" />
+        </joint>
+
+        <link name="${prefix}Link4">
+            <inertial>
+                <origin rpy="0 0 0" xyz="${L04_ComX} ${L04_ComY} ${L04_ComZ}" />
+                <mass value="${L04_Mass}" />
+                <inertia
+                    ixx="${L04_Ixx}" ixy="${L04_Ixy}" ixz="${L04_Ixz}"
+                    iyy="${L04_Iyy}" iyz="${L04_Iyz}"
+                    izz="${L04_Izz}" />
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/visual/Link4.dae" />
+                </geometry>
+                <xacro:insert_block name="material_light_grey" />
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/collision/Link4.STL" />
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${prefix}joint_4" type="revolute">
+            <origin rpy="0 0 0" xyz="0.218 0 0.057" />
+            <parent link="${prefix}Link3" />
+            <child link="${prefix}Link4" />
+            <axis xyz="0 1 0" />
+            <dynamics damping="${jointDamping}" friction="${jointFriction}" />
+            <limit lower="${min_joint_4_pos}" upper="${max_joint_4_pos}"
+                    effort="${joint_4_effort}" velocity="${joint_4_vel}" />
+        </joint>
+
+        <link name="${prefix}Link5">
+            <inertial>
+                <origin rpy="0 0 0" xyz="${L05_ComX} ${L05_ComY} ${L05_ComZ}" />
+                <mass value="${L05_Mass}" />
+                <inertia
+                    ixx="${L05_Ixx}" ixy="${L05_Ixy}" ixz="${L05_Ixz}"
+                    iyy="${L05_Iyy}" iyz="${L05_Iyz}"
+                    izz="${L05_Izz}" />
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/visual/Link5.dae" />
+                </geometry>
+                <xacro:insert_block name="material_light_grey" />
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/collision/Link5.STL" />
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${prefix}joint_5" type="revolute">
+            <origin rpy="0 0 0" xyz="0.07 0 0" />
+            <parent link="${prefix}Link4" />
+            <child link="${prefix}Link5" />
+            <axis xyz="0 0 1" />
+            <dynamics damping="${jointDamping}" friction="${jointFriction}" />
+            <limit lower="${min_joint_5_pos}" upper="${max_joint_5_pos}"
+                    effort="${joint_5_effort}" velocity="${joint_5_vel}" />
+        </joint>
+
+        <link name="${prefix}Link6">
+            <inertial>
+                <origin rpy="0 0 0" xyz="${L06_ComX} ${L06_ComY} ${L06_ComZ}" />
+                <mass value="${L06_Mass}" />
+                <inertia
+                    ixx="${L06_Ixx}" ixy="${L06_Ixy}" ixz="${L06_Ixz}"
+                    iyy="${L06_Iyy}" iyz="${L06_Iyz}"
+                    izz="${L06_Izz}" />
+            </inertial>
+            <visual>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/visual/Link6.dae" />
+                </geometry>
+                <xacro:insert_block name="material_light_grey" />
+            </visual>
+            <collision>
+                <origin rpy="0 0 0" xyz="0 0 0" />
+                <geometry>
+                    <mesh filename="file://$(find unitree_z1_description)/meshes/collision/Link6.STL" />
+                </geometry>
+            </collision>
+        </link>
+
+        <joint name="${prefix}joint_6" type="revolute">
+            <origin rpy="0 0 0" xyz="0.0492 0 0" />
+            <parent link="${prefix}Link5" />
+            <child link="${prefix}Link6" />
+            <axis xyz="1 0 0" />
+            <dynamics damping="${jointDamping}" friction="${jointFriction}" />
+            <limit lower="${min_joint_6_pos}" upper="${max_joint_6_pos}"
+                    effort="${joint_6_effort}" velocity="${joint_6_vel}" />
+        </joint>
+
+        <xacro:if value="${use_camera}">
+            <xacro:include filename="$(find unitree_z1_description)/urdf/camera/d435.urdf.xacro" />
+            <xacro:d435_camera parent="base_link" prefix="${prefix}">
+                <origin rpy="0 0 0" xyz="0.22 -0.60 0" />
+            </xacro:d435_camera>
+        </xacro:if>
+
+        <xacro:if value="${sim_gazebo}">
+            <xacro:include filename="$(find unitree_z1_description)/urdf/gz/unitree_z1.gazebo.xacro" />
+            <xacro:unitree_z1_gazebo parent="${parent}" prefix="${prefix}" use_camera="${use_camera}" />
+        </xacro:if>
+
+        <xacro:include filename="$(find unitree_z1_description)/urdf/ros2_control/unitree_z1_ros2_control.xacro" />
+        <xacro:unitree_z1_ros2_control prefix="${prefix}" sim_gazebo="${sim_gazebo}" gripper="${gripper}" />
+
+    </xacro:macro>
+
+</robot>

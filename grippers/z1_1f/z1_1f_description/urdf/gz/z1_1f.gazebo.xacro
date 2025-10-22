@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:macro name="z1_1f_gazebo" params="prefix">
+
+    <gazebo reference="${prefix}gripperMover">
+        <material>Gazebo/Dark_Grey</material>
+    </gazebo>
+
+  </xacro:macro>
+</robot>
