@@ -2,9 +2,9 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>gen3_lite_moveit_config</name>
-  <version>0.3.0</version>
+  <version>0.1.0</version>
   <description>
-     An automatically generated package with all the configuration and launch files for using the gen3_lite (and kinova_2f_lite gripper) with the MoveIt Motion Planning Framework
+     Moveit2 configuration package for Gen3 Lite
   </description>
   <maintainer email="nilton.csv18@edu.udesc.br">nilton</maintainer>
 

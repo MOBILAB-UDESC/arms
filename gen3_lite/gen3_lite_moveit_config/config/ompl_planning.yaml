@@ -143,7 +143,7 @@ planner_configs:
   TrajOptDefault:
     type: geometric::TrajOpt
 
-Arm:
+arm:
   default_planner_config: RRTConnectkConfigDefault
   planner_configs:
     - APSConfigDefault

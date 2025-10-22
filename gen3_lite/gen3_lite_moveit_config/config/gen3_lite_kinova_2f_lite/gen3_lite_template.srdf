@@ -8,7 +8,7 @@
 -->
 <robot name="<robot_name>">
     <!-- PLANNING GROUPS -->
-    <group name="Arm">
+    <group name="arm">
         <joint name="<robot_prefix>base_joint"/>
         <joint name="<robot_prefix>joint_1"/>
         <joint name="<robot_prefix>joint_2"/>
@@ -27,8 +27,8 @@
     </group>
 
     <!-- GROUP STATES: Purpose: Predefined joint configurations for common robot poses -->
-    <!-- Arm group states -->
-    <group_state name="zero" group="Arm">
+    <!-- arm group states -->
+    <group_state name="zero" group="arm">
         <joint name="<robot_prefix>joint_1" value="0"/>
         <joint name="<robot_prefix>joint_2" value="0"/>
         <joint name="<robot_prefix>joint_3" value="0"/>
@@ -36,7 +36,7 @@
         <joint name="<robot_prefix>joint_5" value="0"/>
         <joint name="<robot_prefix>joint_6" value="0"/>
     </group_state>
-    <group_state name="hook" group="Arm">
+    <group_state name="hook" group="arm">
         <joint name="<robot_prefix>joint_1" value="0.1333"/>
         <joint name="<robot_prefix>joint_2" value="0.3317"/>
         <joint name="<robot_prefix>joint_3" value="1.5429"/>
