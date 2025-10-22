@@ -6,10 +6,14 @@
 
     <xacro:property name="finger_to_control" value="joint_R"/>
 
-    <xacro:macro name="load_gripper" params="*origin parent prefix sim_gazebo">
+    <xacro:macro name="load_gripper" params="
+        *origin
+        parent
+        prefix
+        sim_gazebo">
 
         <joint name="${prefix}gripper_base_joint" type="fixed">
-            <xacro:insert_block name="origin"/>
+            <xacro:insert_block name="origin" />
             <parent link="${prefix}${parent}" />
             <child link="${prefix}gripper_base_link" />
             <axis xyz="0 0 0" />
@@ -17,30 +21,33 @@
 
         <link name="${prefix}gripper_base_link">
             <inertial>
-                <origin xyz="-0.0068528 -3.9973E-06 0.039705" rpy="0 0 0"/>
-                <mass value="0.077892"/>
-                <inertia ixx="3.8236E-05" ixy="1.3465E-08" ixz="-2.0614E-07" iyy="1.7707E-05" iyz="-6.7117E-10" izz="4.8839E-05"/>
+                <origin rpy="0 0 0" xyz="-0.0068528 -3.9973E-06 0.039705" />
+                <mass value="0.077892" />
+                <inertia
+                    ixx="3.8236E-05" ixy="1.3465E-08" ixz="-2.0614E-07"
+                    iyy="1.7707E-05" iyz="-6.7117E-10"
+                    izz="4.8839E-05" />
             </inertial>
             <visual>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link6.STL"/>
+                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link6.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black"/>
+                <xacro:insert_block name="material_black" />
             </visual>
             <collision>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link6.STL"/>
+                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link6.STL" />
                 </geometry>
             </collision>
         </link>
 
         <joint name="${prefix}joint_L" type="prismatic">
-            <origin xyz="-0.0056012 -0.029636 0.0706" rpy="-1.5714 -1.5708 0" />
+            <origin rpy="-1.5714 -1.5708 0" xyz="-0.0056012 -0.029636 0.0706" />
             <parent link="${prefix}gripper_base_link" />
             <child link="${prefix}Link_L" />
-            <axis xyz="0 0 -1"/>
+            <axis xyz="0 0 -1" />
             <limit lower="${min_left_finger_joint_pos}" upper="${max_left_finger_joint_pos}"
                     effort="${left_finger_joint_effort}" velocity="${left_finger_joint_vel}" />
             <dynamics damping="${left_finger_joint_damping}" friction="${left_finger_joint_friction}" />
@@ -48,65 +55,59 @@
 
         <link name="${prefix}Link_L">
             <inertial>
-                <origin xyz="0.018927 0.006 0.012082" rpy="0 0 0"/>
-                <mass value="0.015046"/>
+                <origin rpy="0 0 0" xyz="0.018927 0.006 0.012082" />
+                <mass value="0.015046" />
                 <inertia
-                    ixx="1.2692E-06"
-                    ixy="7.7441E-20"
-                    ixz="-1.133E-07"
-                    iyy="2.0229E-06"
-                    iyz="1.2044E-20"
+                    ixx="1.2692E-06" ixy="7.7441E-20" ixz="-1.133E-07"
+                    iyy="2.0229E-06" iyz="1.2044E-20"
                     izz="2.6177E-06" />
             </inertial>
             <visual>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_L.STL"/>
+                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_L.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black"/>
+                <xacro:insert_block name="material_black" />
             </visual>
             <collision>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_L.STL"/>
+                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_L.STL" />
                 </geometry>
             </collision>
         </link>
 
         <joint name="${prefix}joint_R" type="prismatic">
-            <mimic joint="${prefix}joint_L" multiplier="-1"/>
-            <origin xyz="-0.0056388 0.02964 0.0706" rpy="1.5702 -1.5708 0"/>
-            <parent link="${prefix}gripper_base_link"/>
-            <child link="${prefix}link_R"/>
-            <axis xyz="0 0 1"/>
+            <mimic joint="${prefix}joint_L" multiplier="-1" />
+            <origin rpy="1.5702 -1.5708 0" xyz="-0.0056388 0.02964 0.0706" />
+            <parent link="${prefix}gripper_base_link" />
+            <child link="${prefix}Link_R" />
+            <axis xyz="0 0 1" />
             <limit lower="${min_right_finger_joint_pos}" upper="${max_right_finger_joint_pos}"
                     effort="${right_finger_joint_effort}" velocity="${right_finger_joint_vel}" />
             <dynamics damping="${right_finger_joint_damping}" friction="${right_finger_joint_friction}" />
         </joint>
 
-        <link name="${prefix}link_R">
+        <link name="${prefix}Link_R">
             <inertial>
-                <origin xyz="0.018927 -0.006 0.012082" rpy="0 0 0"/>
-                <mass value="0.015046"/>
+                <origin rpy="0 0 0" xyz="0.018927 -0.006 0.012082" />
+                <mass value="0.015046" />
                 <inertia
-                    ixx="1.2692E-06"
-                    ixy="-7.8273E-20"
-                    ixz="-1.133E-07"
-                    iyy="2.0229E-06"
-                    iyz="-1.2122E-20"
+                    ixx="1.2692E-06" ixy="-7.8273E-20" ixz="-1.133E-07"
+                    iyy="2.0229E-06" iyz="-1.2122E-20"
                     izz="2.6177E-06" />
             </inertial>
             <visual>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_R.STL"/>
+                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_R.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black"/>
+                <xacro:insert_block name="material_black" />
             </visual>
             <collision>
-                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_R.STL"/>
+                    <mesh filename="file://$(find d1_2f_description)/meshes/Link_R.STL" />
                 </geometry>
             </collision>
         </link>

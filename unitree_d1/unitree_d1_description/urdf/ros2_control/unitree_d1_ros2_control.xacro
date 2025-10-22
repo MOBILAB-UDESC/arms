@@ -8,71 +8,113 @@
                 <plugin>gz_ros2_control/GazeboSimSystem</plugin>
             </hardware>
         </xacro:if>
+        <xacro:unless value="${sim_gazebo}">
+            <hardware>
+                <plugin>d1_hardware_interface/D1HardwareInterface</plugin>
+                <!-- <param name="topic_sufix">asda</param> -->
+                <!-- <xacro:if value="${gripper == 'z1_1f'}">
+                    <param name="gripper">true</param>
+                </xacro:if>
+                <xacro:unless value="${gripper == 'z1_1f'}">
+                    <param name="gripper">false</param>
+                </xacro:unless> -->
+            </hardware>
+        </xacro:unless>
         <joint name="${prefix}joint_1">
             <command_interface name="position">
                 <param name="min">${min_joint_1_pos}</param>
                 <param name="max">${max_joint_1_pos}</param>
             </command_interface>
-            <state_interface name="position">
-                <param name="initial_value">${joint_1_initial}</param>
-            </state_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="effort"/>
+            <xacro:if value="${sim_gazebo}">
+                <state_interface name="position">
+                    <param name="initial_value">${joint_1_initial}</param>
+                </state_interface>
+            </xacro:if>
+            <xacro:unless value="${sim_gazebo}">
+                <state_interface name="position" />
+            </xacro:unless>
+            <!-- <state_interface name="velocity"/>
+            <state_interface name="effort"/> -->
         </joint>
         <joint name="${prefix}joint_2">
             <command_interface name="position">
                 <param name="min">${min_joint_2_pos}</param>
                 <param name="max">${max_joint_2_pos}</param>
             </command_interface>
-            <state_interface name="position">
-                <param name="initial_value">${joint_2_initial}</param>
-            </state_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="effort"/>
+            <xacro:if value="${sim_gazebo}">
+                <state_interface name="position">
+                    <param name="initial_value">${joint_2_initial}</param>
+                </state_interface>
+            </xacro:if>
+            <xacro:unless value="${sim_gazebo}">
+                <state_interface name="position" />
+            </xacro:unless>
+            <!-- <state_interface name="velocity"/>
+            <state_interface name="effort"/> -->
         </joint>
         <joint name="${prefix}joint_3">
             <command_interface name="position">
                 <param name="min">${min_joint_3_pos}</param>
                 <param name="max">${max_joint_3_pos}</param>
             </command_interface>
-            <state_interface name="position">
-                <param name="initial_value">${joint_3_initial}</param>
-            </state_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="effort"/>
+            <xacro:if value="${sim_gazebo}">
+                <state_interface name="position">
+                    <param name="initial_value">${joint_3_initial}</param>
+                </state_interface>
+            </xacro:if>
+            <xacro:unless value="${sim_gazebo}">
+                <state_interface name="position" />
+            </xacro:unless>
+            <!-- <state_interface name="velocity"/>
+            <state_interface name="effort"/> -->
         </joint>
         <joint name="${prefix}joint_4">
             <command_interface name="position">
                 <param name="min">${min_joint_4_pos}</param>
                 <param name="max">${max_joint_4_pos}</param>
             </command_interface>
-            <state_interface name="position">
-                <param name="initial_value">${joint_4_initial}</param>
-            </state_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="effort"/>
+            <xacro:if value="${sim_gazebo}">
+                <state_interface name="position">
+                    <param name="initial_value">${joint_4_initial}</param>
+                </state_interface>
+            </xacro:if>
+            <xacro:unless value="${sim_gazebo}">
+                <state_interface name="position" />
+            </xacro:unless>
+            <!-- <state_interface name="velocity"/>
+            <state_interface name="effort"/> -->
         </joint>
         <joint name="${prefix}joint_5">
             <command_interface name="position">
                 <param name="min">${min_joint_5_pos}</param>
                 <param name="max">${max_joint_5_pos}</param>
             </command_interface>
-            <state_interface name="position">
-                <param name="initial_value">${joint_5_initial}</param>
-            </state_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="effort"/>
+            <xacro:if value="${sim_gazebo}">
+                <state_interface name="position">
+                    <param name="initial_value">${joint_5_initial}</param>
+                </state_interface>
+            </xacro:if>
+            <xacro:unless value="${sim_gazebo}">
+                <state_interface name="position" />
+            </xacro:unless>
+            <!-- <state_interface name="velocity"/>
+            <state_interface name="effort"/> -->
         </joint>
         <joint name="${prefix}joint_6">
             <command_interface name="position">
                 <param name="min">${min_joint_6_pos}</param>
                 <param name="max">${max_joint_6_pos}</param>
             </command_interface>
-            <state_interface name="position">
-                <param name="initial_value">${joint_6_initial}</param>
-            </state_interface>
-            <state_interface name="velocity"/>
-            <state_interface name="effort"/>
+            <xacro:if value="${sim_gazebo}">
+                <state_interface name="position">
+                    <param name="initial_value">${joint_6_initial}</param>
+                </state_interface>
+            </xacro:if>
+            <xacro:unless value="${sim_gazebo}">
+                <state_interface name="position" />
+            </xacro:unless>
+            <!-- <state_interface name="velocity"/>
+            <state_interface name="effort"/> -->
         </joint>
     </ros2_control>
 

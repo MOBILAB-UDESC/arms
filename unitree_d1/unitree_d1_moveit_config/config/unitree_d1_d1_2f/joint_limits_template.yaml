@@ -1,0 +1,52 @@
+# This template defines velocity and acceleration limits for all robot joints.
+# Template variable <robot_prefix> is replaced at launch time.
+
+default_velocity_scaling_factor: 1.0
+default_acceleration_scaling_factor: 1.0
+
+joint_limits:
+  # ARM JOINTS
+  <robot_prefix>joint_1:
+    has_velocity_limits: true
+    max_velocity: 1.05
+    has_acceleration_limits: true
+    max_acceleration: 1.0
+  <robot_prefix>joint_2:
+    has_velocity_limits: true
+    max_velocity: 1.05
+    has_acceleration_limits: true
+    max_acceleration: 1.0
+  <robot_prefix>joint_3:
+    has_velocity_limits: true
+    max_velocity: 1.05
+    has_acceleration_limits: true
+    max_acceleration: 1.0
+  <robot_prefix>joint_4:
+    has_velocity_limits: true
+    max_velocity: 1.73
+    has_acceleration_limits: true
+    max_acceleration: 1.0
+  <robot_prefix>joint_5:
+    has_velocity_limits: true
+    max_velocity: 1.73
+    has_acceleration_limits: true
+    max_acceleration: 1.0
+  <robot_prefix>joint_6:
+    has_velocity_limits: true
+    max_velocity: 1.73
+    has_acceleration_limits: true
+    max_acceleration: 1.0
+
+  # GRIPPER JOINTS
+
+  <robot_prefix>joint_L:
+    has_velocity_limits: true
+    max_velocity: 0.02
+    has_acceleration_limits: true
+    max_acceleration: 0.02
+
+  <robot_prefix>joint_R:
+    has_velocity_limits: true
+    max_velocity: 0.02
+    has_acceleration_limits: true
+    max_acceleration: 0.02

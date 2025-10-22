@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SRDF Configuration Template for Gen3 Lite Robot with Kinova 2F Lite Gripper
+
+    Template Variables:
+    - <robot_name>: Will be replaced with the actual robot name at launch time
+    - <robot_prefix>: Will be replaced with joint/link prefix at launch time
+-->
+<robot name="<robot_name>">
+    <!-- PLANNING GROUPS -->
+    <group name="arm">
+        <joint name="<robot_prefix>base_joint"/>
+        <joint name="<robot_prefix>joint_1"/>
+        <joint name="<robot_prefix>joint_2"/>
+        <joint name="<robot_prefix>joint_4"/>
+        <joint name="<robot_prefix>joint_3"/>
+        <joint name="<robot_prefix>joint_5"/>
+        <joint name="<robot_prefix>joint_6"/>
+    </group>
+
+    <!-- GROUP STATES: Purpose: Predefined joint configurations for common robot poses -->
+    <!-- Arm group states -->
+    <group_state name="base" group="arm">
+        <joint name="<robot_prefix>joint_1" value="0"/>
+        <joint name="<robot_prefix>joint_2" value="-1.56"/>
+        <joint name="<robot_prefix>joint_3" value="1.56"/>
+        <joint name="<robot_prefix>joint_4" value="0"/>
+        <joint name="<robot_prefix>joint_5" value="0"/>
+        <joint name="<robot_prefix>joint_6" value="0"/>
+    </group_state>
+    <group_state name="hook" group="arm">
+        <joint name="<robot_prefix>joint_1" value="0"/>
+        <joint name="<robot_prefix>joint_2" value="-1.01"/>
+        <joint name="<robot_prefix>joint_3" value="0.7373"/>
+        <joint name="<robot_prefix>joint_4" value="1.4931"/>
+        <joint name="<robot_prefix>joint_5" value="1.2751"/>
+        <joint name="<robot_prefix>joint_6" value="-1.2854"/>
+    </group_state>
+
+    <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
+    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>Link1" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>Link2" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>Link3" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>Link4" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>Link1" link2="<robot_prefix>Link2" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>Link1" link2="<robot_prefix>Link3" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>Link1" link2="<robot_prefix>Link4" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>Link2" link2="<robot_prefix>Link3" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>Link2" link2="<robot_prefix>Link4" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>Link3" link2="<robot_prefix>Link4" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>Link3" link2="<robot_prefix>Link5" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>Link4" link2="<robot_prefix>Link5" reason="Adjacent"/>
+</robot>

@@ -1,0 +1,7 @@
+<library path="d1_hardware_interface">
+  <class name="d1_hardware_interface/D1HardwareInterface"
+         type="d1_hardware_interface::D1HardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>Unitree D1 hardware interface</description>
+  </class>
+</library>
