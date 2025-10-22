@@ -17,7 +17,7 @@
             </state_interface>
             <state_interface name="velocity"/>
         </joint>
-        
+
         <joint name="${prefix}right_finger_tip_joint">
             <state_interface name="position" />
             <state_interface name="velocity" />
@@ -25,7 +25,7 @@
             <param name="mimic">${prefix}right_finger_bottom_joint</param>
             <param name="multiplier">-1</param>
         </joint>
-        
+
         <joint name="${prefix}left_finger_bottom_joint">
             <state_interface name="position" />
             <state_interface name="velocity" />
@@ -33,7 +33,7 @@
             <param name="mimic">${prefix}right_finger_bottom_joint</param>
             <param name="multiplier">-1</param>
         </joint>
-        
+
         <joint name="${prefix}left_finger_tip_joint">
             <state_interface name="position" />
             <state_interface name="velocity" />
