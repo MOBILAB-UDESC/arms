@@ -10,6 +10,7 @@ find_package(CycloneDDS-CXX REQUIRED)
 find_package(hardware_interface REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
+find_package(pal_statistics REQUIRED)
 
 # Get D1-SDK and UNITREE SDK2 from github
 

@@ -16,6 +16,7 @@ set(ROS2_REQUIRED_COMPONENTS
     pluginlib
     rclcpp
     rclcpp_lifecycle
+    pal_statistics
     )
 
 foreach(COMPONENT ${ROS2_REQUIRED_COMPONENTS})
