@@ -28,7 +28,6 @@
     <xacro:arg name="use_external_cable" default="false" />
 
     <xacro:include filename="$(find gen3_lite_description)/urdf/gen3_lite_macro.urdf.xacro" />
-    <xacro:include filename="$(find gen3_lite_description)/urdf/macros.urdf.xacro" />
 
     <link name="world"/>
 

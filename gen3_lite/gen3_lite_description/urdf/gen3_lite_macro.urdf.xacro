@@ -4,6 +4,7 @@
 
     <!-- Propagate last link name information because it is the gripper's parent link -->
     <xacro:property name="last_arm_link" value="dummy_link"/>
+    <xacro:include filename="$(find gen3_lite_description)/urdf/macros.urdf.xacro" />
 
     <xacro:macro name="load_arm" params="
         *origin
@@ -31,7 +32,7 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/base_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/base_link.STL" />
                 </geometry>
                 <material name="">
                     <color rgba="0.803 0.824 0.820 1" />
@@ -40,7 +41,7 @@
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/base_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/base_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -57,7 +58,7 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/shoulder_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/shoulder_link.STL" />
                 </geometry>
                 <material name="">
                     <color rgba="0.803 0.824 0.820 1" />
@@ -66,7 +67,7 @@
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/shoulder_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/shoulder_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -93,7 +94,7 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/arm_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/arm_link.STL" />
                 </geometry>
                 <material name="">
                     <color rgba="0.803 0.824 0.820 1" />
@@ -102,7 +103,7 @@
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/arm_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/arm_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -129,7 +130,7 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/forearm_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/forearm_link.STL" />
                 </geometry>
                 <material name="">
                     <color rgba="0.803 0.824 0.820 1" />
@@ -138,7 +139,7 @@
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/forearm_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/forearm_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -165,7 +166,7 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/lower_wrist_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/lower_wrist_link.STL" />
                 </geometry>
                 <material name="">
                     <color rgba="0.803 0.824 0.820 1" />
@@ -174,7 +175,7 @@
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/lower_wrist_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/lower_wrist_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -201,7 +202,7 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/upper_wrist_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/upper_wrist_link.STL" />
                 </geometry>
                 <material name="">
                     <color rgba="0.803 0.824 0.820 1" />
@@ -210,7 +211,7 @@
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find gen3_lite_description)/meshes/upper_wrist_link.STL" />
+                    <mesh filename="package://gen3_lite_description/meshes/upper_wrist_link.STL" />
                 </geometry>
             </collision>
         </link>
