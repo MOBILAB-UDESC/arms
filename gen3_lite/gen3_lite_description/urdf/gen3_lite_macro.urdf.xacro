@@ -2,24 +2,17 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
-    <!-- Propagate last link name information because it is the gripper's parent link -->
-    <xacro:property name="last_arm_link" value="dummy_link"/>
     <xacro:include filename="$(find gen3_lite_description)/urdf/macros.urdf.xacro" />
 
-    <xacro:macro name="load_arm" params="
-        *origin
-        parent
-        prefix
-        sim_gazebo
-        gripper
-        use_camera">
+    <!-- Propagate last link name information because it is the gripper's parent link -->
+    <xacro:property name="last_arm_link" value="dummy_link"/>
 
+    <xacro:macro name="load_arm" params="*origin parent prefix sim_gazebo gripper use_camera">
         <joint name="${prefix}base_joint" type="fixed">
             <xacro:insert_block name="origin" />
             <parent link="${parent}"/>
             <child link="${prefix}base_link" />
         </joint>
-
         <link name="${prefix}base_link">
             <inertial>
                 <origin rpy="0 0 0" xyz="0.00244324 0.00015573 0.08616742" />
@@ -34,9 +27,7 @@
                 <geometry>
                     <mesh filename="package://gen3_lite_description/meshes/base_link.STL" />
                 </geometry>
-                <material name="">
-                    <color rgba="0.803 0.824 0.820 1" />
-                </material>
+                <material name="gen3_lite_white" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -60,9 +51,7 @@
                 <geometry>
                     <mesh filename="package://gen3_lite_description/meshes/shoulder_link.STL" />
                 </geometry>
-                <material name="">
-                    <color rgba="0.803 0.824 0.820 1" />
-                </material>
+                <material name="gen3_lite_white" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -71,7 +60,6 @@
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_1" type="revolute">
             <origin rpy="0 0 0" xyz="0 0 0.12825" />
             <parent link="${prefix}base_link" />
@@ -79,7 +67,6 @@
             <axis xyz="0 0 1" />
             <limit lower="${min_joint_1_pos}" upper="${max_joint_1_pos}"
                     effort="${joint_1_effort}" velocity="${joint_1_vel}" />
-            <!-- <dynamics damping="2.0" friction="0.2"/> -->
         </joint>
 
         <link name="${prefix}arm_link">
@@ -96,9 +83,7 @@
                 <geometry>
                     <mesh filename="package://gen3_lite_description/meshes/arm_link.STL" />
                 </geometry>
-                <material name="">
-                    <color rgba="0.803 0.824 0.820 1" />
-                </material>
+                <material name="gen3_lite_white" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -107,7 +92,6 @@
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_2" type="revolute">
             <origin rpy="1.5708 0 0" xyz="0 -0.03 0.115" />
             <parent link="${prefix}shoulder_link" />
@@ -115,7 +99,6 @@
             <axis xyz="0 0 1" />
             <limit lower="${min_joint_2_pos}" upper="${max_joint_2_pos}"
                     effort="${joint_2_effort}" velocity="${joint_2_vel}" />
-            <!-- <dynamics damping="3.0" friction="0.3"/> -->
         </joint>
 
         <link name="${prefix}forearm_link">
@@ -132,9 +115,7 @@
                 <geometry>
                     <mesh filename="package://gen3_lite_description/meshes/forearm_link.STL" />
                 </geometry>
-                <material name="">
-                    <color rgba="0.803 0.824 0.820 1" />
-                </material>
+                <material name="gen3_lite_white" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -143,7 +124,6 @@
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_3" type="revolute">
             <origin rpy="-3.1416 0 0" xyz="0 0.28 0" />
             <parent link="${prefix}arm_link" />
@@ -151,7 +131,6 @@
             <axis xyz="0 0 1" />
             <limit lower="${min_joint_3_pos}" upper="${max_joint_3_pos}"
                     effort="${joint_3_effort}" velocity="${joint_3_vel}" />
-            <!-- <dynamics damping="2.5" friction="0.25"/> -->
         </joint>
 
         <link name="${prefix}lower_wrist_link">
@@ -168,9 +147,7 @@
                 <geometry>
                     <mesh filename="package://gen3_lite_description/meshes/lower_wrist_link.STL" />
                 </geometry>
-                <material name="">
-                    <color rgba="0.803 0.824 0.820 1" />
-                </material>
+                <material name="gen3_lite_white" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -179,7 +156,6 @@
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_4" type="revolute">
             <origin rpy="1.5708 0 0" xyz="0 -0.14 0.02" />
             <parent link="${prefix}forearm_link" />
@@ -187,7 +163,6 @@
             <axis xyz="0 0 1" />
             <limit lower="${min_joint_4_pos}" upper="${max_joint_4_pos}"
                     effort="${joint_4_effort}" velocity="${joint_4_vel}" />
-            <!-- <dynamics damping="1.0" friction="0.1"/> -->
         </joint>
 
         <link name="${prefix}upper_wrist_link">
@@ -204,9 +179,7 @@
                 <geometry>
                     <mesh filename="package://gen3_lite_description/meshes/upper_wrist_link.STL" />
                 </geometry>
-                <material name="">
-                    <color rgba="0.803 0.824 0.820 1" />
-                </material>
+                <material name="gen3_lite_white" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
@@ -215,7 +188,6 @@
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_5" type="revolute">
             <origin rpy="0 1.5708 0" xyz="0.0285 0 0.105" />
             <parent link="${prefix}lower_wrist_link" />
@@ -223,7 +195,6 @@
             <axis xyz="0 0 1" />
             <limit lower="${min_joint_5_pos}" upper="${max_joint_5_pos}"
                     effort="${joint_5_effort}" velocity="${joint_5_vel}" />
-            <!-- <dynamics damping="1.0" friction="0.1"/> -->
         </joint>
 
         <link name="${prefix}end_effector_link">
@@ -236,7 +207,6 @@
                     izz="1e-6" />
             </inertial>
         </link>
-
         <joint name="${prefix}joint_6" type="revolute">
             <origin rpy="0 -1.5708 0" xyz="-0.105 0 0.0285" />
             <parent link="${prefix}upper_wrist_link" />
@@ -244,23 +214,27 @@
             <axis xyz="0 0 1" />
             <limit lower="${min_joint_6_pos}" upper="${max_joint_6_pos}"
                     effort="${joint_6_effort}" velocity="${joint_6_vel}" />
-            <!-- <dynamics damping="1.0" friction="0.1"/> -->
         </joint>
 
+        <!-- Dummy Link for Gripper Attachment -->
         <link name="${prefix}dummy_link" />
         <joint name="${prefix}end_effector" type="fixed">
             <origin rpy="0 0 0" xyz="0 0 0" />
             <parent link="${prefix}end_effector_link" />
             <child link="${prefix}dummy_link" />
             <axis xyz="0 0 1" />
-            <!-- <limit lower="0" upper="0" effort="0" velocity="0" /> -->
         </joint>
 
+        <!-- Optional components -->
         <xacro:if value="${use_camera}">
-            <xacro:include filename="$(find gen3_lite_description)/urdf/camera/d435.urdf.xacro" />
+            <!-- <xacro:include filename="$(find gen3_lite_description)/urdf/camera/d435.urdf.xacro" />
             <xacro:d435_camera parent="base_link" prefix="${prefix}">
                 <origin rpy="0 0 0" xyz="0.22 -0.30 0" />
-            </xacro:d435_camera>
+            </xacro:d435_camera> -->
+            <xacro:include filename="$(find gen3_lite_description)/urdf/camera/_d435.urdf.xacro" />
+            <xacro:sensor_d435 parent="dummy_link" prefix="${prefix}" name="camera_1">
+                <origin rpy="${M_PI} -${M_PI/2} 0.0" xyz="0.045 0.0 0.015" />
+            </xacro:sensor_d435>
         </xacro:if>
 
         <xacro:if value="${sim_gazebo}">
