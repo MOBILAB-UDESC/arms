@@ -16,6 +16,7 @@ from arms_utils.replace_string import replace_string
 def launch_setup(context, *args, **kwargs):
     """Configure and launch MoveIt motion planning node with optional RViz visualization."""
     arm = LaunchConfiguration('arm').perform(context)
+    base = f'{LaunchConfiguration('base').perform(context)}'
     gripper = LaunchConfiguration('gripper').perform(context)
     prefix = LaunchConfiguration('prefix').perform(context)
     publish_robot_description_semantic = LaunchConfiguration('publish_robot_description_semantic')
@@ -25,12 +26,15 @@ def launch_setup(context, *args, **kwargs):
 
     robot_name = arm
 
+    if base:
+        base += '_'
+
     # Build MoveIt configuration with planning pipelines and robot-specific configs
     pkg_path = get_package_share_directory(f'{arm}_moveit_config')
     moveit_config = (
         MoveItConfigsBuilder(robot_name=arm)
         .joint_limits(replace_string(
-            f'{pkg_path}/config/{arm}_{gripper}/joint_limits_template.yaml',
+            f'{pkg_path}/config/{base}{arm}_{gripper}/joint_limits_template.yaml',
             ['<robot_prefix>'],
             [prefix]
         ))
@@ -43,18 +47,19 @@ def launch_setup(context, *args, **kwargs):
             pipelines=["ompl", "pilz_industrial_motion_planner", "stomp"],
             default_planning_pipeline="ompl"
         )
-        .pilz_cartesian_limits(f'{pkg_path}/config/pilz_cartesian_limits.yaml')
-        .robot_description_kinematics(f'{pkg_path}/config/kinematics.yaml')
+        # .pilz_cartesian_limits(f'{pkg_path}/config/pilz_cartesian_limits.yaml')
+        # .robot_description_kinematics(f'{pkg_path}/config/kinematics.yaml')
         .robot_description_semantic(replace_string(
-            f'{pkg_path}/config/{arm}_{gripper}/{arm}_template.srdf',
+            f'{pkg_path}/config/{base}{arm}_{gripper}/{arm}_template.srdf',
             ['<robot_prefix>', '<robot_name>'],
             [prefix, robot_name]
         ))
         .trajectory_execution(replace_string(
-            f'{pkg_path}/config/{arm}_{gripper}/moveit_controllers_template.yaml',
+            f'{pkg_path}/config/{base}{arm}_{gripper}/moveit_controllers_template.yaml',
             ['<robot_prefix>'],
             [prefix]
         ))
+        # .sensors_3d(f'{pkg_path}/config/sensors_3d.yaml')
         .to_moveit_configs()
     )
 
@@ -77,6 +82,7 @@ def launch_setup(context, *args, **kwargs):
             {
                 'use_sim_time': use_sim_time,
                 'publish_robot_description_semantic': publish_robot_description_semantic,
+                'octomap_resolution': 0.005
             },
         ]
     )
@@ -117,6 +123,16 @@ def generate_launch_description():
                 'gen3_lite',
                 'unitree_d1',
                 'unitree_z1',
+            ],
+            description='Arm model.'
+        ),
+        DeclareLaunchArgument(
+            'base',
+            default_value='',
+            choices=[
+                '',
+                'jackal',
+                'kobuki',
             ],
             description='Arm model.'
         ),
