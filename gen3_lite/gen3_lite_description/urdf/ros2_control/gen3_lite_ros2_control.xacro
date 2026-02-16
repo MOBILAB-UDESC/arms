@@ -8,6 +8,23 @@
                     <plugin>gz_ros2_control/GazeboSimSystem</plugin>
                 </hardware>
             </xacro:if>
+            <xacro:unless value="${sim_gazebo}">
+                <hardware>
+                    <plugin>kortex_driver/KortexMultiInterfaceHardware</plugin>
+                    <param name="robot_ip">${robot_ip}</param>
+                    <param name="username">${username}</param>
+                    <param name="password">${password}</param>
+                    <param name="port">${port}</param>
+                    <param name="port_realtime">${port_realtime}</param>
+                    <param name="session_inactivity_timeout_ms">${session_inactivity_timeout_ms}</param>
+                    <param name="connection_inactivity_timeout_ms">${connection_inactivity_timeout_ms}</param>
+                    <param name="tf_prefix">"${prefix}"</param>
+                    <param name="use_internal_bus_gripper_comm">${use_internal_bus_gripper_comm}</param>
+                    <param name="gripper_joint_name">${gripper_joint_name}</param>
+                    <param name="gripper_max_velocity">${gripper_max_velocity}</param>
+                    <param name="gripper_max_force">${gripper_max_force}</param>
+                </hardware>
+            </xacro:unless>
 
             <joint name="${prefix}joint_1">
                 <command_interface name="position">
