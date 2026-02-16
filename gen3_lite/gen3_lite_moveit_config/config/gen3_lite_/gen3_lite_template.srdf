@@ -39,13 +39,15 @@
     </group_state>
 
     <!--DISABLE COLLISIONS: By default it is assumed that any link of the robot could potentially come into collision with any other link in the robot. This tag disables collision checking between a specified pair of links. -->
-    <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>base_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>arm_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>shoulder_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>shoulder_link" link2="<robot_prefix>arm_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>shoulder_link" link2="<robot_prefix>forearm_link" reason="Never"/>
     <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>forearm_link" reason="Adjacent"/>
     <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>lower_wrist_link" reason="Never"/>
-    <disable_collisions link1="<robot_prefix>arm_link" link2="<robot_prefix>shoulder_link" reason="Adjacent"/>
-    <disable_collisions link1="<robot_prefix>base_link" link2="<robot_prefix>shoulder_link" reason="Adjacent"/>
     <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>lower_wrist_link" reason="Adjacent"/>
-    <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>shoulder_link" reason="Never"/>
     <disable_collisions link1="<robot_prefix>forearm_link" link2="<robot_prefix>upper_wrist_link" reason="Never"/>
     <disable_collisions link1="<robot_prefix>lower_wrist_link" link2="<robot_prefix>upper_wrist_link" reason="Adjacent"/>
+    <disable_collisions link1="<robot_prefix>lower_wrist_link" link2="<robot_prefix>camera_1_link" reason="Never"/>
+    <disable_collisions link1="<robot_prefix>upper_wrist_link" link2="<robot_prefix>camera_1_link" reason="Adjacent"/>
 </robot>
