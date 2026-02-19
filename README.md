@@ -38,9 +38,9 @@ arms/
 ## Cloning and building
 ``` bash
 mkdir ~/arms_ws && cd ~/arms_ws
-git clone --recursive https://github.com/MOBILAB-UDESC/arms.git
-rosdep install --from-paths mobi_robots --ignore-src -r -y
-colcon build # --parallel-workers 2
+git clone --recursive https://github.com/MOBILAB-UDESC/arms.git src
+rosdep install --from-paths src --ignore-src -r -y
+colcon build
 source install/setup.bash
 ```
 
