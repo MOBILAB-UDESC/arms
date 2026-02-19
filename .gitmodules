@@ -13,3 +13,6 @@
 [submodule "unitree_z1"]
 	path = unitree_z1
 	url = git@github.com:MOBILAB-UDESC/unitree_z1.git
+[submodule "grippers/z1_1f"]
+	path = grippers/z1_1f
+	url = git@github.com:MOBILAB-UDESC/z1_1f.git
