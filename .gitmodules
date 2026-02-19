@@ -4,3 +4,6 @@
 [submodule "grippers/kinova_2f_lite"]
 	path = grippers/kinova_2f_lite
 	url = git@github.com:MOBILAB-UDESC/kinova_2f_lite.git
+[submodule "unitree_d1"]
+	path = unitree_d1
+	url = git@github.com:MOBILAB-UDESC/unitree_d1.git
