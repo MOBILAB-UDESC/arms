@@ -2,16 +2,17 @@
 
 <robot xmlns:xacro="http://ros.org/wiki/xacro">
 
+    <xacro:include filename="$(find unitree_d1_description)/urdf/macros.urdf.xacro" />
+
     <!-- Propagate last link name information because it is the gripper's parent link -->
-    <xacro:property name="last_arm_link" value="Link6"/>
+    <xacro:property name="last_arm_link" value="Link6" />
 
     <xacro:macro name="load_arm" params="*origin parent prefix sim_gazebo gripper use_camera">
         <joint name="${prefix}base_joint" type="fixed">
             <xacro:insert_block name="origin" />
-            <parent link="${parent}"/>
+            <parent link="${parent}" />
             <child link="${prefix}base_link" />
         </joint>
-
         <link name="${prefix}base_link">
             <inertial>
                 <origin rpy="0 0 0" xyz="-0.00048697 -2.9605E-12 0.017142" />
@@ -24,14 +25,14 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/base_link.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/base_link.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black" />
+                <material name="d1_dark_grey" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/base_link.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/base_link.STL" />
                 </geometry>
             </collision>
         </link>
@@ -48,18 +49,17 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link1.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link1.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black" />
+                <material name="d1_dark_grey" />
             </visual>
             <collision>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link1.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link1.STL" />
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_1" type="revolute">
             <origin rpy="0 0 -3.1416" xyz="0 0 0.0533" />
             <parent link="${prefix}base_link" />
@@ -81,18 +81,17 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link2.STL"/>
+                    <mesh filename="package://unitree_d1_description/meshes/Link2.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black"/>
+                <material name="d1_dark_grey" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link2.STL"/>
+                    <mesh filename="package://unitree_d1_description/meshes/Link2.STL" />
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_2" type="revolute">
             <origin rpy="1.5708 0 -3.1416" xyz="0 0.028 0.0563" />
             <parent link="${prefix}Link1" />
@@ -114,18 +113,17 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link3.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link3.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black" />
+                <material name="d1_dark_grey" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link3.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link3.STL" />
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_3" type="revolute">
             <origin rpy="0 0 0" xyz="0 0.2693 0.0009" />
             <parent link="${prefix}Link2" />
@@ -147,23 +145,22 @@
             <visual>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link4.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link4.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black" />
+                <material name="d1_dark_grey" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link4.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link4.STL" />
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_4" type="revolute">
             <origin rpy="-1.5708 0 -1.5708" xyz="0.0577 0.042 -0.0275" />
-            <parent link="${prefix}Link3"/>
-            <child link="${prefix}Link4"/>
-            <axis xyz="0 0 1"/>
+            <parent link="${prefix}Link3" />
+            <child link="${prefix}Link4" />
+            <axis xyz="0 0 1" />
             <limit lower="${min_joint_4_pos}" upper="${max_joint_4_pos}"
                     effort="${joint_4_effort}" velocity="${joint_4_vel}" />
         </joint>
@@ -180,18 +177,17 @@
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link5.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link5.STL" />
                 </geometry>
-                <xacro:insert_block name="material_black" />
+                <material name="d1_dark_grey" />
             </visual>
             <collision>
                 <origin rpy="0 0 0" xyz="0 0 0" />
                 <geometry>
-                    <mesh filename="file://$(find unitree_d1_description)/meshes/Link5.STL" />
+                    <mesh filename="package://unitree_d1_description/meshes/Link5.STL" />
                 </geometry>
             </collision>
         </link>
-
         <joint name="${prefix}joint_5" type="revolute">
             <origin rpy="1.5708 -1.5708 0" xyz="-0.0001 -0.0237 0.14018" />
             <parent link="${prefix}Link4" />
@@ -211,7 +207,6 @@
                     izz="1e-6" />
             </inertial>
         </link>
-
         <joint name="${prefix}joint_6" type="revolute">
             <origin rpy="-1.5708 0 -1.5708" xyz="0.0825 -0.0010782 -0.023822" />
             <parent link="${prefix}Link5" />
@@ -221,11 +216,12 @@
                     effort="${joint_6_effort}" velocity="${joint_6_vel}" />
         </joint>
 
+        <!-- Optional components -->
         <xacro:if value="${use_camera}">
-            <xacro:include filename="$(find unitree_d1_description)/urdf/camera/d435.urdf.xacro" />
-            <xacro:d435_camera parent="base_link" prefix="${prefix}">
-                <origin rpy="0 0 0" xyz="0.22 -0.60 0" />
-            </xacro:d435_camera>
+            <xacro:include filename="$(find unitree_d1_description)/urdf/camera/_d435.urdf.xacro" />
+            <xacro:sensor_d435 parent="${last_arm_link}" prefix="${prefix}" name="camera_1">
+                <origin rpy="0 -${M_PI/2} 0.0" xyz="-0.055 0.0 0.02" />
+            </xacro:sensor_d435>
         </xacro:if>
 
         <xacro:if value="${sim_gazebo}">

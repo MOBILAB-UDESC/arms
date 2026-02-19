@@ -1,29 +1,25 @@
 <?xml version="1.0"?>
 
-<robot name="unitree_d1" xmlns:xacro="http://ros.org/wiki/xacro">
+<robot name="$(arg name)" xmlns:xacro="http://ros.org/wiki/xacro">
 
     <!-- Arguments -->
+    <xacro:arg name="name" default="unitree_d1" />
     <xacro:arg name="sim_gazebo" default="true" />
     <xacro:arg name="use_camera" default="false" />
     <xacro:arg name="prefix" default=""/>
-
     <xacro:arg name="gripper" default="" />
 
-    <xacro:arg name="joint_limits" default="$(find unitree_d1_description)/config/joint_limits.yaml" />
-    <xacro:arg name="initial_position" default="$(find unitree_d1_description)/config/initial_position.yaml" />
-
+    <xacro:include filename="$(find unitree_d1_description)/urdf/camera/_materials.urdf.xacro" />
     <xacro:include filename="$(find unitree_d1_description)/urdf/unitree_d1_macro.urdf.xacro" />
-    <xacro:include filename="$(find unitree_d1_description)/urdf/macros.urdf.xacro" />
 
     <link name="world"/>
 
     <xacro:load_arm
-        parent="world"
-        prefix="$(arg prefix)"
-        sim_gazebo="$(arg sim_gazebo)"
-        gripper="$(arg gripper)"
-        use_camera="$(arg use_camera)">
-
+            parent="world"
+            prefix="$(arg prefix)"
+            sim_gazebo="$(arg sim_gazebo)"
+            gripper="$(arg gripper)"
+            use_camera="$(arg use_camera)">
         <origin rpy="0 0 0" xyz="0 0 0" />
     </xacro:load_arm>
 
