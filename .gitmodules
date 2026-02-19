@@ -1,0 +1,3 @@
+[submodule "gen3_lite"]
+	path = gen3_lite
+	url = git@github.com:MOBILAB-UDESC/gen3_lite.git
