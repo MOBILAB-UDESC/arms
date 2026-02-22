@@ -1,0 +1,6 @@
+plan_demo_node:
+  ros__parameters:
+    target_position: [0.283, 0.133, 0.479]
+    target_orientation: [-0.617, 0.407, -0.374, 0.560]
+    max_vel_scaling_factor: 0.8
+    max_acc_scaling_factor: 0.8
