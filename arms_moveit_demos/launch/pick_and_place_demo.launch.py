@@ -14,7 +14,7 @@ def generate_launch_description():
 
     demo_spawn_node = Node(
         package='arms_moveit_demos',
-        executable='plan_demo_node',
+        executable='pick_and_place_demo_node',
         output='screen',
         parameters=[LaunchConfiguration('demo_config_file'), {'use_sim_time': True}],
     )

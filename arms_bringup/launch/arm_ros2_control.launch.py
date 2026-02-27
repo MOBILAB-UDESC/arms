@@ -76,7 +76,6 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner',
         name='joint_state_broadcaster',
         output='screen',
-        name='joint_state_broadcaster',
         arguments=['joint_state_broadcaster'],
         parameters=[{'use_sim_time': use_sim_time}],
     )

@@ -1,6 +1,19 @@
 plan_demo_node:
   ros__parameters:
-    target_position: [0.283, 0.133, 0.479]
-    target_orientation: [-0.617, 0.407, -0.374, 0.560]
+    arm_move_group_name: arm
+    target_position: [-0.282, -0.010, 0.5] # m
+    target_orientation: [-1.57, 0.0, 0.0] # rad
     max_vel_scaling_factor: 0.8
     max_acc_scaling_factor: 0.8
+
+pick_and_place_demo_node:
+  ros__parameters:
+    arm_move_group_name: arm
+    gripper_move_group_name: gripper
+    init_pose: zero # pose to init the pick and place (pose created in .srdf file)
+    target_position: [-0.4347, -0.1451, 0.457] # m
+    target_orientation: [-1.566, -0.000, 1.571] # rad
+    place_pose: place # pose to place objects (pose created in .srdf file)
+    max_vel_scaling_factor: 0.6
+    max_acc_scaling_factor: 0.6
+    sim_attach: true

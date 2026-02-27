@@ -5,22 +5,19 @@
 
 #include "geometry_msgs/msg/pose_stamped.hpp"
 #include "moveit/move_group_interface/move_group_interface.hpp"
-#include "moveit/planning_scene_interface/planning_scene_interface.hpp"
-#include "moveit_msgs/msg/attached_collision_object.hpp"
-#include "moveit_msgs/msg/collision_object.hpp"
-#include "moveit_msgs/msg/display_robot_state.hpp"
-#include "moveit_msgs/msg/display_trajectory.hpp"
+#include "moveit_visual_tools/moveit_visual_tools.h"
 #include "rclcpp/rclcpp.hpp"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
 namespace arms_moveit_demos
 {
 
 using moveit::planning_interface::MoveGroupInterface;
-using moveit::planning_interface::PlanningSceneInterface;
 using namespace std::chrono_literals;
 
 struct Parameters
 {
+  std::string arm_move_group_name;
   std::vector<double> target_position;
   std::vector<double> target_orientation;
   double max_vel_scaling_factor;
@@ -30,7 +27,7 @@ struct Parameters
 class PlanDemo : public rclcpp::Node
 {
 public:
-  explicit PlanDemo(const std::string & node_name);
+  explicit PlanDemo(const rclcpp::NodeOptions & options);
 
   ~PlanDemo() = default;
 
@@ -39,17 +36,22 @@ private:
 
   void move_group_init();
 
-  void move_group_debug();
+  void move_group_visual();
 
   const geometry_msgs::msg::PoseStamped get_target_pose();
 
+  void move_group_debug();
+
+  void move_group_control();
+
   void end_node();
 
-  rclcpp::Publisher<moveit_msgs::msg::DisplayTrajectory>::SharedPtr plan_publisher_;
+  rclcpp::Node::SharedPtr node_;
+  rclcpp::Executor::SharedPtr executor_;
   rclcpp::TimerBase::SharedPtr timer_;
 
   std::unique_ptr<MoveGroupInterface> move_group_;
-  PlanningSceneInterface planning_scene_interface_;
+  std::unique_ptr<moveit_visual_tools::MoveItVisualTools> moveit_visual_tools_;
 
   Parameters parameters_;
 };

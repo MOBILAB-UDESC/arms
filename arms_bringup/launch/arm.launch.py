@@ -195,7 +195,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument('x', default_value='0.0', description='Robot initial pose x.'),
         DeclareLaunchArgument('y', default_value='0.0', description='Robot initial pose y.'),
-        DeclareLaunchArgument('z', default_value='0.06', description='Robot initial pose z.'),
+        DeclareLaunchArgument('z', default_value='0.0', description='Robot initial pose z.'),
         DeclareLaunchArgument('Y', default_value='0.0', description='Robot initial yaw angle.'),
     ]
 
