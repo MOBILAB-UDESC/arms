@@ -18,27 +18,22 @@ from nav2_common.launch import ReplaceString
 
 def launch_setup(context, *args, **kwargs):
     """
-    Configure ROS 2 controllers for a robotic arm.
+        Configure ROS 2 controllers for a robotic arm.
 
-    Controllers are launched in sequence:
-    1. joint_state_broadcaster
-    2. arm_controller (after joint_state_broadcaster)
-    3. gripper_controller (after arm_controller, if 'gripper' is enabled)
-
-    Returns
-    ----------
-        list: Launch actions ready for execution.
+        Controllers are launched in sequence:
+        1. controller_manager: if use_sim_time is false
+        2. joint_state_broadcaster
+        3. arm_controller (after joint_state_broadcaster)
+        4. gripper_controller (after arm_controller, if 'gripper' is enabled)
     """
-    nodes = []
-    package = "arms_bringup"
-    packagePath = get_package_share_directory(package)
+    bringup_pkg_path = get_package_share_directory('arms_bringup')
 
     arm = LaunchConfiguration('arm', default='gen3_lite').perform(context)
     gripper = LaunchConfiguration('gripper', default='').perform(context)
     ros2_control_params = LaunchConfiguration(
         'ros2_control_params',
-        default=PathJoinSubstitution([packagePath, 'config', 'ros2_control.yaml'])
-    ).perform(context)
+        default=PathJoinSubstitution([bringup_pkg_path, 'config', 'ros2_control.yaml'])
+    )
     use_sim_time = LaunchConfiguration('use_sim_time', default=True)
 
     ros2_control_params = ReplaceString(
@@ -46,43 +41,40 @@ def launch_setup(context, *args, **kwargs):
         replacements={'<robot_prefix>': (LaunchConfiguration('prefix', default=''))},
     )
 
-    # Launch controller manager for real robot hardware (when not using sim time)
-    controller_manager_node = Node(
-        condition=UnlessCondition(use_sim_time),
-        package='controller_manager',
-        executable='ros2_control_node',
-        parameters=[ros2_control_params],
-        remappings=[
-            ('~/robot_description', '/robot_description'),
-        ],
-        output="both",
-    )
-
+    nodes = []
     # Check for arm-specific setup launch file
     arm_pkg = get_package_share_directory(f'{arm}_description')
     arm_setup_launch = PathJoinSubstitution([
         arm_pkg,
         'launch',
         f'{arm}_setup.launch.py'
-    ]).perform(context)
+    ])
 
     arm_setup_node = None
 
-    if os.path.exists(arm_setup_launch):
+    if os.path.exists(arm_setup_launch.perform(context)):
         arm_setup_node = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(arm_setup_launch),
             condition=UnlessCondition(LaunchConfiguration('use_sim_time')),
         )
-    # else:
-    #     print(f"{arm_setup_launch} not found")
 
     if arm_setup_node is not None:
         nodes = [arm_setup_node]
+
+    # Launch controller manager for real robot hardware (when not using sim time)
+    controller_manager_node = Node(
+        condition=UnlessCondition(use_sim_time),
+        package='controller_manager',
+        executable='ros2_control_node',
+        parameters=[ros2_control_params],
+        output="both",
+    )
 
     # Launch joint state broadcaster (first in sequence)
     joint_state_broadcaster = Node(
         package='controller_manager',
         executable='spawner',
+        name='joint_state_broadcaster',
         output='screen',
         name='joint_state_broadcaster',
         arguments=['joint_state_broadcaster'],
@@ -93,13 +85,9 @@ def launch_setup(context, *args, **kwargs):
     arm_controller = Node(
         package='controller_manager',
         executable='spawner',
+        name=f'{arm}_trajectory_controller',
         output='screen',
-        name='joint_trajectory_controller',
-        arguments=[
-            f'{arm}_arm_controller',
-            '--param-file',
-            ros2_control_params,
-        ],
+        arguments=[f'{arm}_arm_controller', '--param-file', ros2_control_params],
         parameters=[{'use_sim_time': use_sim_time}],
     )
 
@@ -118,12 +106,11 @@ def launch_setup(context, *args, **kwargs):
 
     # Launch gripper controller if gripper is specified (third in sequence)
     if gripper:
-
         gripper_controller = Node(
             package='controller_manager',
             executable='spawner',
+            name=f'{gripper}_gripper_controller',
             output='screen',
-            name='gripper_controller',
             arguments=[
                 f'{gripper}_gripper_controller',
                 '--param-file',

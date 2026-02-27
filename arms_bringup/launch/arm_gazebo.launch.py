@@ -9,7 +9,7 @@ def bridge_camera(context, *args, **kwargs):
     """Create and return a ROS 2 node to bridge the robot's camera topics from Gazebo."""
     # Set camera topic names using prefix to match URDF configuration.
     prefix = LaunchConfiguration('prefix', default='').perform(context)
-    camera_topic = f'/{prefix}camera_head'
+    camera_topic = f'/{prefix}camera_1'
 
     camera_bridge_node = Node(
         package='ros_gz_bridge',
@@ -36,7 +36,7 @@ def generate_launch_description():
         output='screen',
         arguments=[
             '-topic', 'robot_description',
-            '-name', LaunchConfiguration('name', default='gen3_lite'),
+            '-name', LaunchConfiguration('robot_name', default='gen3_lite'),
             '-allow_renaming', 'true',
             '-x', LaunchConfiguration('x', default=0.0),
             '-y', LaunchConfiguration('y', default=0.0),

@@ -1,6 +1,6 @@
-controller_manager:
+/**/controller_manager:
   ros__parameters:
-    update_rate: 100  # Hz
+    update_rate: 200  # Hz
 
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
@@ -26,7 +26,7 @@ controller_manager:
 # ==================================================================
 #                           KINOVA GEN3 LITE
 # ==================================================================
-gen3_lite_arm_controller:
+/**/gen3_lite_arm_controller:
   ros__parameters:
     type: joint_trajectory_controller/JointTrajectoryController
     joints:
@@ -42,26 +42,27 @@ gen3_lite_arm_controller:
       - position
       - velocity
 
-    allow_integration_in_goal_trajectories: true
-    allow_nonzero_velocity_at_trajectory_end: true
+    state_publish_rate: 100.0
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: false
+    constraints:
+      stopped_velocity_tolerance: 0.0
+      goal_time: 0.0
 
-kinova_2f_lite_gripper_controller:
+/**/kinova_2f_lite_gripper_controller:
   ros__parameters:
     type: position_controllers/GripperActionController
     # type: parallel_gripper_action_controller/GripperActionController
     joint: '<robot_prefix>right_finger_bottom_joint'
-    action_monitor_rate: 20.0
-    goal_tolerance: 0.01
-    max_effort: 100.0
-    allow_stalling: false
-    stall_velocity_threshold: 0.001
-    stall_timeout: 1.0
+    default: true
+    allow_stalling: true
 
 # ==================================================================
 #                           UNITREE D1
 # ==================================================================
-unitree_d1_arm_controller:
+/**/unitree_d1_arm_controller:
   ros__parameters:
+    type: joint_trajectory_controller/JointTrajectoryController
     joints:
       - <robot_prefix>joint_1
       - <robot_prefix>joint_2
@@ -82,7 +83,7 @@ unitree_d1_arm_controller:
       stopped_velocity_tolerance: 0.01
       goal_time: 0.0
 
-d1_2f_gripper_controller:
+/**/d1_2f_gripper_controller:
   ros__parameters:
     joint: '<robot_prefix>joint_L'
     action_monitor_rate: 20.0
@@ -95,8 +96,9 @@ d1_2f_gripper_controller:
 # ==================================================================
 #                           UNITREE Z1
 # ==================================================================
-unitree_z1_arm_controller:
+/**/unitree_z1_arm_controller:
   ros__parameters:
+    type: joint_trajectory_controller/JointTrajectoryController
     joints:
       - <robot_prefix>joint_1
       - <robot_prefix>joint_2
@@ -119,7 +121,7 @@ unitree_z1_arm_controller:
       stopped_velocity_tolerance: 0.01
       goal_time: 0.0
 
-z1_1f_gripper_controller:
+/**/z1_1f_gripper_controller:
   ros__parameters:
     joints:
       - <robot_prefix>jointGripper

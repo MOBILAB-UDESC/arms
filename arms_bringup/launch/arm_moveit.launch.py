@@ -2,15 +2,26 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.actions import OpaqueFunction
+from launch.actions import (
+    DeclareLaunchArgument,
+    OpaqueFunction
+)
 from launch.conditions import IfCondition
-from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import (
+    LaunchConfiguration,
+    PathJoinSubstitution
+)
 from launch_ros.actions import Node
 from moveit_configs_utils import MoveItConfigsBuilder
+from nav2_common.launch import ReplaceString
 
-from arms_utils.replace_string import replace_string
+# Arm and gripper models.
+AVAILABLE_ARMS = ['gen3_lite', 'unitree_d1', 'unitree_z1']
+DEFAULT_ARM = 'gen3_lite'
+# d1_2f: Standard gripper for Unitree D1 arm
+# z1_1f: Standard gripper for Unitree Z1 arm
+AVAILABLE_GRIPPERS = ['', 'kinova_2f_lite', 'd1_2f', 'z1_1f']
+DEFAULT_GRIPPER = ''  # No gripper
 
 
 def launch_setup(context, *args, **kwargs):
@@ -18,6 +29,7 @@ def launch_setup(context, *args, **kwargs):
     arm = LaunchConfiguration('arm').perform(context)
     base = f'{LaunchConfiguration('base').perform(context)}'
     gripper = LaunchConfiguration('gripper').perform(context)
+    octomap = LaunchConfiguration('octomap').perform(context)
     prefix = LaunchConfiguration('prefix').perform(context)
     publish_robot_description_semantic = LaunchConfiguration('publish_robot_description_semantic')
     rviz = LaunchConfiguration('rviz')
@@ -31,35 +43,45 @@ def launch_setup(context, *args, **kwargs):
 
     # Build MoveIt configuration with planning pipelines and robot-specific configs
     pkg_path = get_package_share_directory(f'{arm}_moveit_config')
+
+    joint_limits_path = ReplaceString(
+        source_file=f'{pkg_path}/config/{base}{arm}_{gripper}/joint_limits_template.yaml',
+        replacements={'<robot_prefix>': prefix},
+    )
+
+    robot_description_semantic_path = ReplaceString(
+        source_file=f'{pkg_path}/config/{base}{arm}_{gripper}/{arm}_template.srdf',
+        replacements={'<robot_prefix>': prefix, '<robot_name>': robot_name},
+    )
+
+    trajectory_execution_path = ReplaceString(
+        source_file=f'{pkg_path}/config/{base}{arm}_{gripper}/moveit_controllers_template.yaml',
+        replacements={'<robot_prefix>': prefix},
+    )
+
+    if octomap == 'true':
+        sensors_3d_path = ReplaceString(
+            source_file=f'{pkg_path}/config/sensors_3d_template.yaml',
+            replacements={'<robot_prefix>': prefix},
+        )
+    else:
+        sensors_3d_path = PathJoinSubstitution([pkg_path, 'config', 'sensors_3d_empty.yaml'])
+
     moveit_config = (
         MoveItConfigsBuilder(robot_name=arm)
-        .joint_limits(replace_string(
-            f'{pkg_path}/config/{base}{arm}_{gripper}/joint_limits_template.yaml',
-            ['<robot_prefix>'],
-            [prefix]
-        ))
+        .joint_limits(joint_limits_path.perform(context))
         .planning_scene_monitor(
             publish_robot_description=False,
             publish_robot_description_semantic=True,
             publish_planning_scene=True,
         )
         .planning_pipelines(
-            pipelines=["ompl", "pilz_industrial_motion_planner", "stomp"],
+            pipelines=["ompl", "pilz_industrial_motion_planner", "stomp", "chomp"],
             default_planning_pipeline="ompl"
         )
-        # .pilz_cartesian_limits(f'{pkg_path}/config/pilz_cartesian_limits.yaml')
-        # .robot_description_kinematics(f'{pkg_path}/config/kinematics.yaml')
-        .robot_description_semantic(replace_string(
-            f'{pkg_path}/config/{base}{arm}_{gripper}/{arm}_template.srdf',
-            ['<robot_prefix>', '<robot_name>'],
-            [prefix, robot_name]
-        ))
-        .trajectory_execution(replace_string(
-            f'{pkg_path}/config/{base}{arm}_{gripper}/moveit_controllers_template.yaml',
-            ['<robot_prefix>'],
-            [prefix]
-        ))
-        # .sensors_3d(f'{pkg_path}/config/sensors_3d.yaml')
+        .robot_description_semantic(robot_description_semantic_path.perform(context))
+        .trajectory_execution(trajectory_execution_path.perform(context))
+        .sensors_3d(sensors_3d_path.perform(context))
         .to_moveit_configs()
     )
 
@@ -118,13 +140,9 @@ def generate_launch_description():
     args = [
         DeclareLaunchArgument(
             'arm',
-            default_value='unitree_z1',
-            choices=[
-                'gen3_lite',
-                'unitree_d1',
-                'unitree_z1',
-            ],
-            description='Arm model.'
+            default_value=DEFAULT_ARM,
+            choices=AVAILABLE_ARMS,
+            description='Arm model'
         ),
         DeclareLaunchArgument(
             'base',
@@ -132,20 +150,20 @@ def generate_launch_description():
             choices=[
                 '',
                 'jackal',
-                'kobuki',
             ],
-            description='Arm model.'
+            description='Mobile base platform to mount the arm on.'
         ),
         DeclareLaunchArgument(
             'gripper',
-            default_value='',
-            choices=[
-                '',  # No gripper
-                'd1_2f',  # Standard gripper for Unitree D1 arm
-                'kinova_2f_lite',
-                'z1_1f',  # Standard gripper for Unitree Z1 arm
-            ],
-            description='Gripper model.'
+            default_value=DEFAULT_GRIPPER,
+            choices=AVAILABLE_GRIPPERS,
+            description='Gripper model. No gripper if unspecified.'
+        ),
+        DeclareLaunchArgument(
+            'octomap',
+            default_value='true',
+            choices=['true', 'false'],
+            description='Whether to use octomap.',
         ),
         DeclareLaunchArgument(
             'prefix',
@@ -165,7 +183,7 @@ def generate_launch_description():
         ),
         DeclareLaunchArgument(
             'use_sim_time',
-            default_value='false',
+            default_value='true',
             description='Whether to use simulation time.',
         ),
         DeclareLaunchArgument(
