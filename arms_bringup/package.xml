@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>arms_bringup</name>
-  <version>0.0.0</version>
+  <version>1.0.0</version>
   <description>Launch package for bringing up robotic arms, including simulation, controllers, and visualization.</description>
   <maintainer email="nilton.csv18@edu.udesc.br">nilton</maintainer>
   <license>BSD-3-Clause</license>
@@ -26,7 +26,6 @@
   <exec_depend>moveit_kinematics</exec_depend>
   <exec_depend>moveit_planners</exec_depend>
   <exec_depend>moveit_simple_controller_manager</exec_depend>
-  <exec_depend>arms_utils</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

@@ -42,6 +42,16 @@ git clone --recursive https://github.com/MOBILAB-UDESC/arms.git src
 rosdep install --from-paths src --ignore-src -r -y
 colcon build
 source install/setup.bash
+echo 'export GZ_SIM_SYSTEM_PLUGIN_PATH=$GZ_SIM_SYSTEM_PLUGIN_PATH:~/arms_ws/build/arms_moveit_demos/_deps/attachable_objects_plugin-build/' >> ~/.bashrc
+source  ~/.bashrc
+```
+
+### Gazebo models (Optional, for some gazebo worlds)
+``` bash
+mkdir ~/mobi_gz_models && cd ~/mobi_gz_models
+git clone --recursive https://github.com/NiltonSV/gazebo_models.git .
+echo 'export GZ_SIM_RESOURCE_PATH=$GZ_SIM_RESOURCE_PATH:~/mobi_gz_models' >> ~/.bashrc
+source  ~/.bashrc
 ```
 
 ## USAGE
@@ -57,7 +67,7 @@ ros2 launch arms_bringup arm.launch.py arm:=unitree_d1 gripper:=d1_2f test_urdf:
 
 #### Launch gazebo world
 ``` bash
-ros2 launch arms_bringup arm_world_launch.py
+ros2 launch arms_bringup arm_world.launch.py
 ```
 
 #### Spawn manipulator
@@ -69,7 +79,7 @@ ros2 launch arms_bringup arm.launch.py arm:=unitree_d1 gripper:=d1_2f use_sim_ti
 
 #### Launch moveit (planning in simulation):
 ``` bash
-ros2 launch arms_bringup arm_moveit_launch.py arm:=unitree_d1 gripper:=d1_2f use_sim_time:=true
+ros2 launch arms_bringup arm_moveit.launch.py arm:=unitree_d1 gripper:=d1_2f use_sim_time:=true
 ```
 
 <img src="https://raw.githubusercontent.com/MOBILAB-UDESC/arms/main/doc/resources/Second_example_2.png" alt="d1_gazebo_moveit" width="1500"/>
@@ -85,7 +95,7 @@ ros2 launch arms_bringup arm.launch.py arm:=unitree_d1
 
 #### Launch moveit
 ``` bash
-ros2 launch arms_bringup arm_moveit_launch.py arm:=unitree_d1
+ros2 launch arms_bringup arm_moveit.launch.py arm:=unitree_d1
 ```
 
 <img src="https://raw.githubusercontent.com/MOBILAB-UDESC/arms/main/doc/resources/Thrid_example_2.png" alt="d1_moveit" width="1500"/>

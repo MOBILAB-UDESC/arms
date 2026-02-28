@@ -1,18 +1,18 @@
 [submodule "gen3_lite"]
 	path = gen3_lite
-	url = git@github.com:MOBILAB-UDESC/gen3_lite.git
+	url = https://github.com/MOBILAB-UDESC/gen3_lite.git
 [submodule "grippers/kinova_2f_lite"]
 	path = grippers/kinova_2f_lite
-	url = git@github.com:MOBILAB-UDESC/kinova_2f_lite.git
+	url = https://github.com/MOBILAB-UDESC/kinova_2f_lite.git
 [submodule "unitree_d1"]
 	path = unitree_d1
-	url = git@github.com:MOBILAB-UDESC/unitree_d1.git
+	url = https://github.com/MOBILAB-UDESC/unitree_d1.git
 [submodule "grippers/d1_2f"]
 	path = grippers/d1_2f
-	url = git@github.com:MOBILAB-UDESC/d1_2f.git
+	url = https://github.com/MOBILAB-UDESC/d1_2f.git
 [submodule "unitree_z1"]
 	path = unitree_z1
-	url = git@github.com:MOBILAB-UDESC/unitree_z1.git
+	url = https://github.com/MOBILAB-UDESC/unitree_z1.git
 [submodule "grippers/z1_1f"]
 	path = grippers/z1_1f
-	url = git@github.com:MOBILAB-UDESC/z1_1f.git
+	url = https://github.com/MOBILAB-UDESC/z1_1f.git
