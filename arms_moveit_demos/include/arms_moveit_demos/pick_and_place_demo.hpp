@@ -16,15 +16,14 @@ namespace arms_moveit_demos
 
 struct Parameters
 {
-  std::string arm_move_group_name;
-  std::string gripper_move_group_name;
+  std::string arm_move_group_name, gripper_move_group_name;
+  std::string base_link;
   std::string init_pose;
-  std::vector<double> target_position;
-  std::vector<double> target_orientation;
+  std::vector<double> target_position, target_orientation;
   std::string place_pose;
-  double max_vel_scaling_factor;
-  double max_acc_scaling_factor;
+  double max_vel_scaling_factor, max_acc_scaling_factor;
   bool sim_attach;
+  std::string last_arm_link, target_name, target_link;
 };
 
 class PickAndPlaceDemo : public rclcpp::Node
@@ -38,6 +37,8 @@ private:
   void declare_parameters();
 
   void move_group_init();
+
+  void get_robot_info();
 
   const geometry_msgs::msg::PoseStamped get_target_pose();
 
@@ -62,6 +63,9 @@ private:
 
   gz::transport::Node gz_node_;
   gz::transport::Node::Publisher attacher_pub_;
+
+  std::string robot_name_;
+  std::string end_effector_link_;
 
   Parameters parameters_;
 };

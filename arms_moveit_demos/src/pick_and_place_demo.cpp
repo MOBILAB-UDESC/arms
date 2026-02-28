@@ -18,13 +18,14 @@ PickAndPlaceDemo::PickAndPlaceDemo(const rclcpp::NodeOptions & options) :
   pick_and_place();
 }
 
-
 void PickAndPlaceDemo::declare_parameters()
 {
   parameters_.arm_move_group_name =
     node_->declare_parameter<std::string>("arm_move_group_name", "arm");
   parameters_.gripper_move_group_name =
     node_->declare_parameter<std::string>("gripper_move_group_name", "gripper");
+  parameters_.base_link =
+    node_->declare_parameter<std::string>("base_link", "base_link");
   parameters_.init_pose =
     node_->declare_parameter<std::string>("init_pose", "zero");
   parameters_.target_position =
@@ -39,6 +40,12 @@ void PickAndPlaceDemo::declare_parameters()
     node_->declare_parameter<double>("max_acc_scaling_factor", 0.5);
   parameters_.sim_attach =
     node_->declare_parameter<bool>("sim_attach", true);
+  parameters_.last_arm_link =
+    node_->declare_parameter<std::string>("last_arm_link", "end_effector_link");
+  parameters_.target_name =
+    node_->declare_parameter<std::string>("target_name", "Apple");
+  parameters_.target_link =
+    node_->declare_parameter<std::string>("target_link", "apple_link");
 }
 
 void PickAndPlaceDemo::move_group_init()
@@ -65,13 +72,20 @@ void PickAndPlaceDemo::move_group_init()
   executor_->add_node(node_);
   std::thread([this]() { executor_->spin(); }).detach();
 
+  get_robot_info();
   update_collision_scene();
+}
+
+void PickAndPlaceDemo::get_robot_info()
+{
+  robot_name_ = arm_move_group_->getRobotModel()->getName();
+  end_effector_link_ = arm_move_group_->getEndEffectorLink();
 }
 
 const geometry_msgs::msg::PoseStamped PickAndPlaceDemo::get_target_pose()
 {
   geometry_msgs::msg::PoseStamped target_pose;
-  target_pose.header.frame_id = "base_link";
+  target_pose.header.frame_id = parameters_.base_link;
   target_pose.header.stamp = this->now();
 
   tf2::Quaternion orientation;
@@ -107,18 +121,18 @@ void PickAndPlaceDemo::close_gripper()
 
 void PickAndPlaceDemo::attach_gripper()
 {
-  std::vector<std::string> touch_links = {
-    "right_finger_bottom_link",
-    "right_finger_dist_link",
-    "left_finger_bottom_link",
-    "left_finger_dist_link",
-    "<octomap>"};
+  // arm_move_group_->attachObject("Apple", "tool_frame", touch_links);
+  arm_move_group_->attachObject(
+    parameters_.target_name,
+    end_effector_link_,
+    gripper_move_group_->getLinkNames());
 
-  // gripper_move_group_->attachObject("apple", "tool_frame", touch_links);
-  arm_move_group_->attachObject("apple", "end_effector_link", touch_links);
   if (parameters_.sim_attach) {
     gz::msgs::StringMsg msg;
-    msg.set_data("[gen3_lite][end_effector_link][Apple_4][apple_link][attach]");
+    msg.set_data("["+robot_name_+"]"
+      "["+parameters_.last_arm_link+"]"
+      "["+parameters_.target_name+"]"
+      "["+parameters_.target_link+"][attach]");
     attacher_pub_.Publish(msg);
   }
   close_gripper();
@@ -126,11 +140,14 @@ void PickAndPlaceDemo::attach_gripper()
 
 void PickAndPlaceDemo::detach_gripper()
 {
-  arm_move_group_->detachObject("apple");
-  planning_scene_interface_.removeCollisionObjects({"apple"});
+  arm_move_group_->detachObject(parameters_.target_name);
+  planning_scene_interface_.removeCollisionObjects({parameters_.target_name});
   if (parameters_.sim_attach) {
     gz::msgs::StringMsg msg;
-    msg.set_data("[gen3_lite][end_effector_link][Apple_4][apple_link][detach]");
+    msg.set_data("["+robot_name_+"]"
+      "["+parameters_.last_arm_link+"]"
+      "["+parameters_.target_name+"]"
+      "["+parameters_.target_link+"][detach]");
     attacher_pub_.Publish(msg);
   }
   open_gripper();
@@ -143,7 +160,7 @@ void PickAndPlaceDemo::update_collision_scene()
 
   // Ground plane
   collision_objects[0].id = "ground_plane";
-  collision_objects[0].header.frame_id = "base_link";
+  collision_objects[0].header.frame_id = parameters_.base_link;
 
   collision_objects[0].primitives.resize(1);
   collision_objects[0].primitives[0].type = shape_msgs::msg::SolidPrimitive::BOX;
@@ -160,8 +177,8 @@ void PickAndPlaceDemo::update_collision_scene()
   collision_objects[0].operation = moveit_msgs::msg::CollisionObject::ADD;
 
   // Apple
-  collision_objects[1].id = "apple";
-  collision_objects[1].header.frame_id = "base_link";
+  collision_objects[1].id = parameters_.target_name;
+  collision_objects[1].header.frame_id = parameters_.base_link;
 
   collision_objects[1].primitives.resize(1);
   collision_objects[1].primitives[0].type = shape_msgs::msg::SolidPrimitive::SPHERE;
@@ -231,10 +248,10 @@ void PickAndPlaceDemo::pick_and_place()
     auto const [success, plan] = std::make_pair(ok, group_plan);
 
     if (success) {
-      RCLCPP_INFO(this->get_logger(), "Going to zero pose.");
+      RCLCPP_INFO(this->get_logger(), "Going to place pose.");
       arm_move_group_->execute(plan);
     } else {
-      RCLCPP_ERROR(this->get_logger(), "Planning to zero pose failed!");
+      RCLCPP_ERROR(this->get_logger(), "Planning to place pose failed!");
       return;
     }
   }

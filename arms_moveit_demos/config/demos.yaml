@@ -10,10 +10,14 @@ pick_and_place_demo_node:
   ros__parameters:
     arm_move_group_name: arm
     gripper_move_group_name: gripper
+    base_link: base_link
     init_pose: zero # pose to init the pick and place (pose created in .srdf file)
-    target_position: [-0.4347, -0.1451, 0.457] # m
+    target_position: [-0.4590, 0.3579, 0.457] # m
     target_orientation: [-1.566, -0.000, 1.571] # rad
     place_pose: place # pose to place objects (pose created in .srdf file)
     max_vel_scaling_factor: 0.6
     max_acc_scaling_factor: 0.6
-    sim_attach: true
+    sim_attach: true # To use attachable object plugin in gazebo
+    last_arm_link: end_effector_link # Gazebo last arm link
+    target_name: Apple_1 # Gazebo target name
+    target_link: apple_link # Gazebo target link
