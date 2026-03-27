@@ -13,6 +13,7 @@
   <depend>gz_msgs_vendor</depend>
   <depend>gz_ros2_control</depend>
   <depend>ros_gz_bridge</depend>
+  <depend>ros_gz_controllers</depend>
   <depend>ros_gz_sim</depend>
   <depend>xacro</depend>
   <!-- to use ReplaceString -->
@@ -22,6 +23,7 @@
   <exec_depend>joint_state_publisher_gui</exec_depend>
   <exec_depend>joint_trajectory_controller</exec_depend>
   <exec_depend>rviz2</exec_depend>
+  <exec_depend>moveit_configs_utils</exec_depend>
   <exec_depend>moveit_ros_move_group</exec_depend>
   <exec_depend>moveit_kinematics</exec_depend>
   <exec_depend>moveit_planners</exec_depend>

@@ -5,7 +5,7 @@
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    gen3_lite_arm_controller:
+    gen3_lite_arm_controllser:
       type: joint_trajectory_controller/JointTrajectoryController
 
     kinova_2f_lite_gripper_controller:
@@ -85,6 +85,7 @@
 
 /**/d1_2f_gripper_controller:
   ros__parameters:
+    type: position_controllers/GripperActionController
     joint: '<robot_prefix>joint_L'
     action_monitor_rate: 20.0
     goal_tolerance: 0.01
