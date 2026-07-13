@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+
+<robot name="$(arg name)" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <!-- Arguments -->
+    <xacro:arg name="name" default="{{arm}}"/>
+    <xacro:arg name="sim_gazebo" default="true" />
+    <xacro:arg name="use_camera" default="false" />
+    <xacro:arg name="prefix" default="" />
+    <xacro:arg name="namespace" default="" />
+    <xacro:arg name="gripper" default="" />
+    <xacro:arg name="gripper_xyz" default="0.0 0.0 0.0" />
+    <xacro:arg name="gripper_rpy" default="0.0 0.0 0.0" />
+
+    <xacro:include filename="$(find {{arm}}_description)/urdf/camera/_materials.urdf.xacro" />
+    <xacro:include filename="$(find {{arm}}_description)/urdf/{{arm}}_macro.urdf.xacro" />
+
+    <link name="world"/>
+
+    <xacro:load_arm
+            parent="world"
+            prefix="$(arg prefix)"
+            namespace="$(arg namespace)"
+            sim_gazebo="$(arg sim_gazebo)"
+            gripper="$(arg gripper)"
+            use_camera="$(arg use_camera)">
+        <origin rpy="0 0 0" xyz="0 0 0" />
+    </xacro:load_arm>
+
+    <xacro:property name="gripper_pkg" value="$(arg gripper)_description" />
+
+    <xacro:unless value="${not '$(arg gripper)'}">
+        <xacro:include filename="$(find ${gripper_pkg})/urdf/$(arg gripper)_macro.urdf.xacro" />
+        <xacro:load_gripper
+            parent="${last_arm_link}"
+            prefix="$(arg prefix)"
+            sim_gazebo="$(arg sim_gazebo)">
+
+            <!-- <origin rpy="0 0 0" xyz="0 0 0" /> -->
+            <origin rpy="$(arg gripper_rpy)" xyz="$(arg gripper_xyz)" />
+        </xacro:load_gripper>
+    </xacro:unless>
+
+</robot>

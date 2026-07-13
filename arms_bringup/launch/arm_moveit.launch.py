@@ -14,48 +14,47 @@ from launch.substitutions import (
 from launch_ros.actions import Node
 from moveit_configs_utils import MoveItConfigsBuilder
 from nav2_common.launch import ReplaceString
-
-# Arm and gripper models.
-AVAILABLE_ARMS = ['gen3_lite', 'unitree_d1', 'unitree_z1']
-DEFAULT_ARM = 'gen3_lite'
-# d1_2f: Standard gripper for Unitree D1 arm
-# z1_1f: Standard gripper for Unitree Z1 arm
-AVAILABLE_GRIPPERS = ['', 'kinova_2f_lite', 'd1_2f', 'z1_1f']
-DEFAULT_GRIPPER = ''  # No gripper
+import yaml
 
 
 def launch_setup(context, *args, **kwargs):
     """Configure and launch MoveIt motion planning node with optional RViz visualization."""
-    arm = LaunchConfiguration('arm').perform(context)
-    base = f'{LaunchConfiguration('base').perform(context)}'
-    gripper = LaunchConfiguration('gripper').perform(context)
+    arm_profile_path = LaunchConfiguration('arm_profile_path').perform(context)
+    arm_profile = LaunchConfiguration('arm_profile').perform(context)
     octomap = LaunchConfiguration('octomap').perform(context)
     prefix = LaunchConfiguration('prefix').perform(context)
-    publish_robot_description_semantic = LaunchConfiguration('publish_robot_description_semantic')
     rviz = LaunchConfiguration('rviz')
     use_sim_time = LaunchConfiguration('use_sim_time')
-    warehouse_sqlite_path = LaunchConfiguration('warehouse_sqlite_path')
+    namespace = LaunchConfiguration('namespace')
+    namespace_str = namespace.perform(context)
 
-    robot_name = arm
+    with open(arm_profile_path, 'r') as f:
+        arm_profiles_yaml = yaml.load(f, Loader=yaml.FullLoader)
+        selected_arm_profile = arm_profiles_yaml['profiles'][arm_profile]
 
-    if base:
-        base += '_'
+    arm = selected_arm_profile['arm']
+    gripper = selected_arm_profile['xacro_args']['gripper']
+    robot_name = namespace_str
+
+    if not robot_name:
+        robot_name = arm
+        print(f'robot_name: {robot_name}')
 
     # Build MoveIt configuration with planning pipelines and robot-specific configs
     pkg_path = get_package_share_directory(f'{arm}_moveit_config')
 
     joint_limits_path = ReplaceString(
-        source_file=f'{pkg_path}/config/{base}{arm}_{gripper}/joint_limits_template.yaml',
+        source_file=f'{pkg_path}/config/{arm}_{gripper}/joint_limits_template.yaml',
         replacements={'<robot_prefix>': prefix},
     )
 
     robot_description_semantic_path = ReplaceString(
-        source_file=f'{pkg_path}/config/{base}{arm}_{gripper}/{arm}_template.srdf',
+        source_file=f'{pkg_path}/config/{arm}_{gripper}/{arm}_template.srdf',
         replacements={'<robot_prefix>': prefix, '<robot_name>': robot_name},
     )
 
     trajectory_execution_path = ReplaceString(
-        source_file=f'{pkg_path}/config/{base}{arm}_{gripper}/moveit_controllers_template.yaml',
+        source_file=f'{pkg_path}/config/{arm}_{gripper}/moveit_controllers_template.yaml',
         replacements={'<robot_prefix>': prefix},
     )
 
@@ -86,38 +85,44 @@ def launch_setup(context, *args, **kwargs):
     )
 
     # For executing Task Constructor solutions
-    move_group_capabilities = {"capabilities": "move_group/ExecuteTaskSolutionCapability"}
-
-    warehouse_ros_config = {
-        'warehouse_plugin': 'warehouse_ros_sqlite::DatabaseConnection',
-        'warehouse_host': warehouse_sqlite_path,
-    }
+    # move_group_capabilities = {"capabilities": "move_group/ExecuteTaskSolutionCapability"}
 
     move_group_node = Node(
         package='moveit_ros_move_group',
         executable='move_group',
         output='screen',
+        namespace=namespace,
         parameters=[
             moveit_config.to_dict(),
-            warehouse_ros_config,
-            move_group_capabilities,
+            # move_group_capabilities,
             {
                 'use_sim_time': use_sim_time,
-                'publish_robot_description_semantic': publish_robot_description_semantic,
+                'publish_robot_description_semantic': True,
                 'octomap_resolution': 0.005
             },
+        ],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')
         ]
     )
 
     rviz_config_file = PathJoinSubstitution(
         [get_package_share_directory(f'{arm}_moveit_config'), 'config', 'moveit.rviz']
     )
+
+    if namespace_str:
+        rviz_config_file = ReplaceString(
+            source_file=rviz_config_file,
+            replacements={'Move Group Namespace: ""': f'Move Group Namespace: "/{namespace_str}"'},
+        )
+
     rviz_node = Node(
-        package='rviz2',
         condition=IfCondition(rviz),
+        package='rviz2',
         executable='rviz2',
-        name='rviz2_moveit',
         output='log',
+        namespace=namespace,
         arguments=['-d', rviz_config_file],
         parameters=[
             moveit_config.robot_description,
@@ -125,10 +130,13 @@ def launch_setup(context, *args, **kwargs):
             moveit_config.robot_description_kinematics,
             moveit_config.planning_pipelines,
             moveit_config.joint_limits,
-            warehouse_ros_config,
             {
                 'use_sim_time': use_sim_time,
             },
+        ],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')
         ]
     )
 
@@ -136,28 +144,27 @@ def launch_setup(context, *args, **kwargs):
 
 
 def generate_launch_description():
+    default_profile_path = PathJoinSubstitution([
+        get_package_share_directory('arms_bringup'),
+        'config',
+        'profiles.yaml',
+    ])
 
     args = [
         DeclareLaunchArgument(
-            'arm',
-            default_value=DEFAULT_ARM,
-            choices=AVAILABLE_ARMS,
-            description='Arm model'
+            'arm_profile',
+            default_value='gen3_lite_kinova_2f_lite',
+            description='Robot configuration name.'
         ),
         DeclareLaunchArgument(
-            'base',
+            'arm_profile_path',
+            default_value=default_profile_path,
+            description='YAML path of the robot configuration.'
+        ),
+        DeclareLaunchArgument(
+            'namespace',
             default_value='',
-            choices=[
-                '',
-                'jackal',
-            ],
-            description='Mobile base platform to mount the arm on.'
-        ),
-        DeclareLaunchArgument(
-            'gripper',
-            default_value=DEFAULT_GRIPPER,
-            choices=AVAILABLE_GRIPPERS,
-            description='Gripper model. No gripper if unspecified.'
+            description='Top-level namespace.'
         ),
         DeclareLaunchArgument(
             'octomap',
@@ -171,11 +178,6 @@ def generate_launch_description():
             description='Prefix for the link/joint names of the robot.'
         ),
         DeclareLaunchArgument(
-            'publish_robot_description_semantic',
-            default_value='true',
-            description='Whether to publish robot description semantic.',
-        ),
-        DeclareLaunchArgument(
             'rviz',
             default_value='true',
             choices=['true', 'false'],
@@ -185,11 +187,6 @@ def generate_launch_description():
             'use_sim_time',
             default_value='true',
             description='Whether to use simulation time.',
-        ),
-        DeclareLaunchArgument(
-            'warehouse_sqlite_path',
-            default_value=os.path.expanduser('~/.ros/warehouse_ros.sqlite'),
-            description='Path where the warehouse database should be stored.',
         ),
     ]
 

@@ -1,0 +1,27 @@
+profiles:
+  gen3_lite_kinova_2f_lite:
+    arm: "gen3_lite"
+    xacro_args:
+      gripper: "kinova_2f_lite"
+      gripper_xyz: "0.0 0.0 0.0"
+      gripper_rpy: "0.0 0.0 0.0"
+      # mount_link: "front_mount"
+      use_camera: true
+
+  unitree_d1_2f:
+    arm: "unitree_d1"
+    xacro_args:
+      gripper: "d1_2f"
+      gripper_xyz: "0.0 0.0 0.0"
+      gripper_rpy: "0.0 0.0 0.0"
+      # mount_link: "front_mount"
+      use_camera: false
+
+  unitree_z1_1f:
+    arm: "unitree_z1"
+    xacro_args:
+      gripper: "z1_1f"
+      gripper_xyz: "0.0 0.0 0.0"
+      gripper_rpy: "0.0 0.0 0.0"
+      # mount_link: "front_mount"
+      use_camera: false

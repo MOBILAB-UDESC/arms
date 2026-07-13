@@ -2,6 +2,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
+    GroupAction,
     IncludeLaunchDescription,
     OpaqueFunction
 )
@@ -17,78 +18,92 @@ from launch.substitutions import (
     NotSubstitution,
     PathJoinSubstitution,
 )
-from launch_ros.actions import Node
-
-# Arm and gripper models.
-AVAILABLE_ARMS = ['gen3_lite', 'unitree_d1', 'unitree_z1']
-DEFAULT_ARM = 'gen3_lite'
-# d1_2f: Standard gripper for Unitree D1 arm
-# z1_1f: Standard gripper for Unitree Z1 arm
-AVAILABLE_GRIPPERS = ['', 'kinova_2f_lite', 'd1_2f', 'z1_1f']
-DEFAULT_GRIPPER = ''  # No gripper
+from launch_ros.actions import (
+    Node,
+    PushRosNamespace
+)
+import yaml
 
 
 def launch_setup(context):
     """
-        Set up and return a list of ROS 2 launch actions for bringing up arms and grippers.
+    Set up and return a list of ROS 2 launch actions for bringing up arms and grippers.
 
-        This function performs the following tasks:
-        - Robot State Publisher
-        - Gazebo simulation: if use_sim_time is True
-        - ROS 2 control
-        - Rviz2
+    This function performs the following tasks:
+    - Robot State Publisher
+    - Gazebo simulation: if use_sim_time is True
+    - ROS 2 control
+    - Rviz2
 
-        Returns:
-            list: List of nodes ready for execution.
+    Returns:
+        list: List of nodes ready for execution.
     """
-    arm = LaunchConfiguration('arm').perform(context)
-    gripper = LaunchConfiguration('gripper')
+
+    arm_profile_path = LaunchConfiguration('arm_profile_path').perform(context)
+    arm_profile = LaunchConfiguration('arm_profile').perform(context)
     prefix = LaunchConfiguration('prefix')
-    robot_name = LaunchConfiguration('robot_name')
     test_urdf = LaunchConfiguration('test_urdf')
     use_sim_time = LaunchConfiguration('use_sim_time')
+    namespace = LaunchConfiguration('namespace')
 
-    # Get packages path based on the selected arm and gripper.
+    with open(arm_profile_path, 'r') as f:
+        arm_profiles_yaml = yaml.load(f, Loader=yaml.FullLoader)
+        selected_arm_profile = arm_profiles_yaml['profiles'][arm_profile]
+
+    nodes = []
+
+    arm = selected_arm_profile['arm']
     arm_pkg_name = f'{arm}_description'
     arm_pkg_path = get_package_share_directory(arm_pkg_name)
     bringup_pkg_path = get_package_share_directory("arms_bringup")
 
-    # === Robot Description and State Publishing ===
+    robot_name = namespace.perform(context)
+    if not robot_name:
+        robot_name = arm
+        print(f'robot_name: {robot_name}')
+
     robot_description = Command([
         'xacro ',
         PathJoinSubstitution([arm_pkg_path, 'urdf', arm]),
         '.urdf.xacro',
         ' sim_gazebo:=', use_sim_time,
         ' prefix:=', prefix,
-        ' gripper:=', gripper,
+        ' gripper:=', selected_arm_profile['xacro_args']['gripper'],
+        ' gripper_xyz:="', str(selected_arm_profile['xacro_args']['gripper_xyz']), '"',
+        ' gripper_rpy:="', str(selected_arm_profile['xacro_args']['gripper_rpy']), '"',
         ' name:=', robot_name,
-        ' use_camera:=', LaunchConfiguration('use_camera')
+        ' namespace:=', namespace,
+        ' use_camera:=', str(selected_arm_profile['xacro_args']['use_camera']),
     ])
-
-    nodes = []
 
     robot_state_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
         output='screen',
+        namespace=namespace,
         parameters=[{
             'use_sim_time': use_sim_time,
-            'robot_description': robot_description
+            'robot_description': robot_description,
         }],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')
+        ]
     )
 
-    # Joint state GUI for testing
     joint_state_publisher_gui = Node(
         condition=IfCondition(test_urdf),
         package='joint_state_publisher_gui',
         executable='joint_state_publisher_gui',
         output='screen',
+        namespace=namespace,
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')
+        ]
     )
 
-    nodes += [
-        robot_state_node,
-        joint_state_publisher_gui
-    ]
+    nodes += [robot_state_node, joint_state_publisher_gui]
 
     # === Gazebo Simulation ===
     gazebo_spawn_node = IncludeLaunchDescription(
@@ -99,15 +114,13 @@ def launch_setup(context):
         launch_arguments={
             'robot_name': robot_name,
             'prefix': prefix,
-            'use_camera': LaunchConfiguration('use_camera'),
+            'use_camera': str(selected_arm_profile['xacro_args']['use_camera']),
             'x': LaunchConfiguration('x'),
             'y': LaunchConfiguration('y'),
             'z': LaunchConfiguration('z'),
             'Y': LaunchConfiguration('Y'),
         }.items()
     )
-
-    nodes += [gazebo_spawn_node]
 
     # === ROS 2 Control (skipped during URDF testing) ===
     robot_controllers = PathJoinSubstitution([bringup_pkg_path, 'config', 'ros2_control.yaml'])
@@ -121,22 +134,34 @@ def launch_setup(context):
             'use_sim_time': use_sim_time,
             'ros2_control_params': robot_controllers,
             'prefix': prefix,
-            'gripper': gripper
+            'namespace': namespace,
+            'gripper': selected_arm_profile['xacro_args']['gripper']
         }.items()
     )
 
-    nodes += [ros2_control_launch]
+    launch_nodes_with_namespace = GroupAction(
+        actions=[
+            PushRosNamespace(namespace),
+            gazebo_spawn_node,
+            ros2_control_launch
+        ]
+    )
 
-    # === Visualization ===
+    nodes += [launch_nodes_with_namespace]
+
     rviz2_path = PathJoinSubstitution([arm_pkg_path, 'rviz', f'{arm}.rviz'])
     rviz2_node = Node(
         condition=IfCondition(LaunchConfiguration('rviz')),
         package="rviz2",
         executable="rviz2",
-        name="arm_rviz2",
+        namespace=namespace,
         output="screen",
         parameters=[{'use_sim_time': use_sim_time}],
         arguments=['-d', rviz2_path],
+        remappings=[
+            ('/tf', 'tf'),
+            ('/tf_static', 'tf_static')
+        ]
     )
 
     nodes += [rviz2_node]
@@ -145,13 +170,28 @@ def launch_setup(context):
 
 
 def generate_launch_description():
+    default_profile_path = PathJoinSubstitution([
+        get_package_share_directory('arms_bringup'),
+        'config',
+        'profiles.yaml',
+    ])
+
     # Declare launch arguments
     args = [
         DeclareLaunchArgument(
-            'arm',
-            default_value=DEFAULT_ARM,
-            choices=AVAILABLE_ARMS,
-            description='Arm model'
+            'arm_profile',
+            default_value='gen3_lite_kinova_2f_lite',
+            description='Robot configuration name.'
+        ),
+        DeclareLaunchArgument(
+            'arm_profile_path',
+            default_value=default_profile_path,
+            description='YAML path of the robot configuration.'
+        ),
+        DeclareLaunchArgument(
+            'namespace',
+            default_value='',
+            description='Top-level namespace.'
         ),
         DeclareLaunchArgument(
             'prefix',
@@ -159,21 +199,10 @@ def generate_launch_description():
             description='Prefix to prepend to all arm link and joint names'
         ),
         DeclareLaunchArgument(
-            'gripper',
-            default_value=DEFAULT_GRIPPER,
-            choices=AVAILABLE_GRIPPERS,
-            description='Gripper model. No gripper if unspecified.'
-        ),
-        DeclareLaunchArgument(
             'rviz',
             default_value='false',
             choices=['true', 'false'],
             description='Whether to execute rviz2.'
-        ),
-        DeclareLaunchArgument(
-            'robot_name',
-            default_value=LaunchConfiguration('arm'),
-            description='Name of the robot.'
         ),
         DeclareLaunchArgument(
             'test_urdf',
@@ -186,12 +215,6 @@ def generate_launch_description():
             default_value='true',
             choices=['true', 'false'],
             description='Whether to use simulation time.'
-        ),
-        DeclareLaunchArgument(
-            'use_camera',
-            default_value='false',
-            choices=['true', 'false'],
-            description='Whether to use a camera.'
         ),
         DeclareLaunchArgument('x', default_value='0.0', description='Robot initial pose x.'),
         DeclareLaunchArgument('y', default_value='0.0', description='Robot initial pose y.'),

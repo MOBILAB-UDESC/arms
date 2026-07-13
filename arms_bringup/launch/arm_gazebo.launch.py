@@ -23,6 +23,11 @@ def bridge_camera(context, *args, **kwargs):
             f'{camera_topic}/points' + '@sensor_msgs/msg/PointCloud2' + '[gz.msgs.PointCloudPacked',
             f'{camera_topic}/camera_info' + '@sensor_msgs/msg/CameraInfo' + '[gz.msgs.CameraInfo',
         ],
+        remappings=[
+            (f'{camera_topic}/image', f'{camera_topic}/rgb/image'),
+            (f'{camera_topic}/depth_image', f'{camera_topic}/depth/image'),
+            (f'{camera_topic}/camera_info', f'{camera_topic}/rgb/camera_info'),
+        ]
     )
 
     return [camera_bridge_node]
@@ -31,6 +36,7 @@ def bridge_camera(context, *args, **kwargs):
 def generate_launch_description():
     """Spawn the robot and optionally bridging its camera."""
     gazebo_spawn_node = Node(
+        condition=IfCondition(LaunchConfiguration('is_tool', default=True)),
         package='ros_gz_sim',
         executable='create',
         output='screen',

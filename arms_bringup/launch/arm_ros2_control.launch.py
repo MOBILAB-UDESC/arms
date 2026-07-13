@@ -7,39 +7,46 @@ from launch.actions import (
     OpaqueFunction,
     RegisterEventHandler,
 )
-from launch.conditions import UnlessCondition
+from launch.conditions import UnlessCondition, IfCondition
 from launch.event_handlers import OnProcessExit
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
-from launch.substitutions import PathJoinSubstitution
+from launch.substitutions import PathJoinSubstitution, OrSubstitution
 from launch_ros.actions import Node
 from nav2_common.launch import ReplaceString
 
 
 def launch_setup(context, *args, **kwargs):
     """
-        Configure ROS 2 controllers for a robotic arm.
+    Configure ROS 2 controllers for a robotic arm.
 
-        Controllers are launched in sequence:
-        1. controller_manager: if use_sim_time is false
-        2. joint_state_broadcaster
-        3. arm_controller (after joint_state_broadcaster)
-        4. gripper_controller (after arm_controller, if 'gripper' is enabled)
+    Controllers are launched in sequence:
+    1. controller_manager: if use_sim_time is false
+    2. joint_state_broadcaster
+    3. arm_controller (after joint_state_broadcaster)
+    4. gripper_controller (after arm_controller, if 'gripper' is enabled)
     """
     bringup_pkg_path = get_package_share_directory('arms_bringup')
 
-    arm = LaunchConfiguration('arm', default='gen3_lite').perform(context)
+    arm = LaunchConfiguration('arm', default='').perform(context)
     gripper = LaunchConfiguration('gripper', default='').perform(context)
+    prefix = LaunchConfiguration('prefix', default='')
     ros2_control_params = LaunchConfiguration(
         'ros2_control_params',
         default=PathJoinSubstitution([bringup_pkg_path, 'config', 'ros2_control.yaml'])
     )
     use_sim_time = LaunchConfiguration('use_sim_time', default=True)
 
+    print(f'arm: {arm}')
+
+    if not arm:
+        return []
+
     ros2_control_params = ReplaceString(
         source_file=ros2_control_params,
-        replacements={'<robot_prefix>': (LaunchConfiguration('prefix', default=''))},
+        replacements={'<robot_prefix>': (prefix)},
     )
+    ros2_control_params_file = ros2_control_params.perform(context)
 
     nodes = []
     # Check for arm-specific setup launch file
@@ -61,17 +68,22 @@ def launch_setup(context, *args, **kwargs):
     if arm_setup_node is not None:
         nodes = [arm_setup_node]
 
+    print(f'sim: {use_sim_time.perform(context)}')
+
     # Launch controller manager for real robot hardware (when not using sim time)
     controller_manager_node = Node(
-        condition=UnlessCondition(use_sim_time),
+        # condition=UnlessCondition(
+        #     OrSubstitution(use_sim_time, LaunchConfiguration('is_tool', default=True))
+        # ),
         package='controller_manager',
         executable='ros2_control_node',
-        parameters=[ros2_control_params],
+        parameters=[ros2_control_params_file],
         output="both",
     )
 
     # Launch joint state broadcaster (first in sequence)
     joint_state_broadcaster = Node(
+        # condition=IfCondition(LaunchConfiguration('is_tool', default=True)),
         package='controller_manager',
         executable='spawner',
         name='joint_state_broadcaster',
@@ -86,8 +98,12 @@ def launch_setup(context, *args, **kwargs):
         executable='spawner',
         name=f'{arm}_trajectory_controller',
         output='screen',
-        arguments=[f'{arm}_arm_controller', '--param-file', ros2_control_params],
+        arguments=[f'{arm}_arm_controller', '--param-file', ros2_control_params_file],
         parameters=[{'use_sim_time': use_sim_time}],
+        # remappings=[
+        #     ('/tf', 'tf'),
+        #     ('/tf_static', 'tf_static')
+        # ]
     )
 
     joint_to_arm = RegisterEventHandler(
@@ -100,7 +116,8 @@ def launch_setup(context, *args, **kwargs):
     nodes += [
         controller_manager_node,
         joint_state_broadcaster,
-        joint_to_arm,
+        # joint_to_arm,
+        arm_controller
     ]
 
     # Launch gripper controller if gripper is specified (third in sequence)
@@ -113,9 +130,13 @@ def launch_setup(context, *args, **kwargs):
             arguments=[
                 f'{gripper}_gripper_controller',
                 '--param-file',
-                ros2_control_params,
+                ros2_control_params_file,
             ],
             parameters=[{'use_sim_time': use_sim_time}],
+            remappings=[
+                ('/tf', 'tf'),
+                ('/tf_static', 'tf_static')
+            ]
         )
 
         arm_to_gripper = RegisterEventHandler(

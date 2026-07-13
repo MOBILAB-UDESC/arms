@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find {{arm}}_description)/urdf/macros.urdf.xacro" />
+
+    <!-- Propagate last link name information because it is the gripper's parent link -->
+    <xacro:property name="last_arm_link" value="dummy_link" />
+
+    <xacro:macro name="load_arm" params="*origin parent prefix sim_gazebo gripper use_camera namespace">
+        <joint name="${prefix}base_joint" type="fixed">
+            <xacro:insert_block name="origin" />
+            <parent link="${parent}" />
+            <child link="${prefix}base_link" />
+        </joint>
+
+        <xacro:if value="${sim_gazebo}">
+            <xacro:include filename="$(find {{arm}}_description)/urdf/gz/{{arm}}.gazebo.xacro" />
+            <xacro:{{arm}}_gazebo parent="${parent}" prefix="${prefix}" use_camera="${use_camera}" namespace="${namespace}" />
+        </xacro:if>
+
+        <xacro:include filename="$(find {{arm}}_description)/urdf/ros2_control/{{arm}}_ros2_control.xacro" />
+        <xacro:{{arm}}_ros2_control prefix="${prefix}" sim_gazebo="${sim_gazebo}" gripper="${gripper}" />
+
+    </xacro:macro>
+
+</robot>
